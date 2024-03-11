@@ -9,6 +9,7 @@
     "@aws-sdk/client-rds-data": "^3.514.0",
     "@aws-sdk/credential-providers": "^3.514.0",
     "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
