@@ -4,10 +4,11 @@ import { auth, users } from "@/drizzle/schema";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Index() {
-  const employees = await db.select().from(users);
   const supabase = createClient();
   const user  = await supabase.auth.getUser()
+  const email = user.data.user?.email;
+  console.log(user)
   return (
-    <h1>Log in</h1>
+    <h1>Hello {email} </h1>
   );
 }

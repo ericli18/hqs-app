@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react";
 import { type User } from "@supabase/supabase-js"
 import { z } from "zod"
 import { useForm } from "react-hook-form";
@@ -14,6 +15,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast"
+
+import { createClient } from "@/utils/supabase/client"
+import { Eye, EyeOff } from "lucide-react";
 
 
 const formSchema = z.object({
@@ -36,6 +41,12 @@ const SignupForm = ({
     if (user) {
         console.log(user.role)
     }
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+    };
+
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -47,8 +58,28 @@ const SignupForm = ({
         }
     })
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values)
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        const supabase = createClient();
+
+        const { error } = await supabase.auth.signUp({
+            email: values.email,
+            password: values.password,
+        })
+
+        if (error) {
+            // console.log(error)
+            toast({
+                title: `Error adding employee ${values.email}`,
+                description: `Error: ${error}`
+            })
+        }
+        else 
+        {
+            toast({
+                title: "Employee succesfully added",
+                description: `User ${values.email} is now registered`
+            })
+        }
     }
 
     return (
@@ -92,16 +123,32 @@ const SignupForm = ({
                         <FormItem className="mt-6">
                             <FormLabel>Password</FormLabel>
                             <FormControl>
-                                <Input
-                                    type="text"
-                                    placeholder='Password'
-                                    {...field}
-                                />
+                            <div className='relative'>
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder='Password'
+                                        {...field}
+                                    />
+                                    <div className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer'>
+                                        {showPassword ? (
+                                            <EyeOff
+                                                className='h-6 w-6'
+                                                onClick={togglePasswordVisibility}
+                                            />
+                                        ) : (
+                                            <Eye
+                                                className='h-6 w-6'
+                                                onClick={togglePasswordVisibility}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
+                
                 <FormField
                     control={form.control}
                     name="confirmPassword"

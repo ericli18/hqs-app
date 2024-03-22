@@ -18,7 +18,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-
+import { useSearchParams } from 'next/navigation'
 
 const formSchema = z.object({
     username: z.string().email({ message: "Must be an email or HQS ID" })
@@ -33,7 +33,7 @@ const LoginForm = ({
 }) => {
 
     const [showPassword, setShowPassword] = useState(false);
-    // const searchParams = useSearchParams();
+    const searchParams = useSearchParams();
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
@@ -48,9 +48,7 @@ const LoginForm = ({
         }
     }, [user, router]);
 
-    if (isAuthenticating) {
-        return null; 
-    }
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -58,6 +56,10 @@ const LoginForm = ({
             password: "",
         }
     })
+
+    if (isAuthenticating) {
+        return null;
+    }
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const supabase = createClient();
@@ -72,8 +74,6 @@ const LoginForm = ({
         }
 
         return router.push("/")
-
-
     }
 
     return (
@@ -127,11 +127,9 @@ const LoginForm = ({
                 <Button type='submit' className='w-full mt-6'>
                     Log in
                 </Button>
-                {/* {searchParams?.message && (
-                    <p className="text-sm font-medium text-destructive">
-                        {searchParams.message}
-                    </p>
-                )} */}
+                <p className="text-sm font-medium text-destructive">
+                    {searchParams.get('message')}
+                </p>
             </form>
         </Form>
     );
