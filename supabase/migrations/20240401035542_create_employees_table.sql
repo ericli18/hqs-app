@@ -1,8 +1,8 @@
+create table public.employees (
+  id uuid not null references auth.users on delete cascade,
+  first_name text,
+  last_name text,
+  hqs_id text,
 
-create table
-employees (
-id bigint primary key generated always as identity,
-name text,
-email text,
-created_at timestamptz default now()
+  primary key (id)
 );
