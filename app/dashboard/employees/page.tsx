@@ -1,4 +1,3 @@
-export default function Page()
-{
-    return <p>Employees</p>
+export default function Page() {
+    return <p>Employees</p>;
 }
