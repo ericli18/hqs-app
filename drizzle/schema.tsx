@@ -1,14 +1,15 @@
+import { pgTable, text, uuid, smallint, smallserial, timestamp } from 'drizzle-orm/pg-core';
 
-import { pgTable, serial, text, uuid } from "drizzle-orm/pg-core";
-
-export const auth = pgTable('users', {
-  id: uuid('id')
-})
-
-export const users = pgTable('profiles', {
-  id: serial('id').primaryKey().references(() => auth.id),
-  first_name: text('first_name'),
-  last_name: text('last_name'),
-  // created_at: varchar('phone', { length: 256 }),
+export const employees = pgTable('employees', {
+    id: uuid('id').primaryKey(),
+    first_name: text('first_name'),
+    last_name: text('last_name'),
+    hqs_id: text('hqs_id'),
+    location: smallint('location').references(() => locations.location_id),
 });
-        
+
+export const locations = pgTable('locations', {
+    location_id: smallserial('location_id').primaryKey(),
+    name: text('name'),
+    created_at: timestamp('created_at'),
+});
