@@ -1,12 +1,8 @@
-import { selectAllEmployees } from '@/lib/data';
+import { selectProfile } from '@/lib/data';
 
 export default async function Page() {
-    const employees = await selectAllEmployees();
-    return (
-        <div>
-            {employees.map((employee) => (
-                <p>{employee.first_name}</p>
-            ))}
-        </div>
-    );
+    // const employees = await selectAllEmployees();
+    const self = await selectProfile();
+    console.log(self);
+    return <div>{self?.first_name}</div>;
 }

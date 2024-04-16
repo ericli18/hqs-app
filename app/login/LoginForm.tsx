@@ -1,7 +1,6 @@
 'use client';
 
-import { type User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +11,7 @@ import { createClient } from '@/utils/supabase/client';
 import { EyeOff, Eye } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
     username: z
@@ -21,22 +21,15 @@ const formSchema = z.object({
     password: z.string().min(5, { message: 'Must be 5 or more characters' }),
 });
 
-const LoginForm = ({ user }: { user: User | null }) => {
+const LoginForm = () => {
+    const { toast } = useToast();
+
     const [showPassword, setShowPassword] = useState(false);
     const searchParams = useSearchParams();
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
-    const [isAuthenticating, setIsAuthenticating] = useState(true);
     const router = useRouter();
-
-    useEffect(() => {
-        if (user) {
-            router.push('/');
-        } else {
-            setIsAuthenticating(false);
-        }
-    }, [user, router]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,23 +39,28 @@ const LoginForm = ({ user }: { user: User | null }) => {
         },
     });
 
-    if (isAuthenticating) {
-        return null;
-    }
-
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const supabase = createClient();
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email: values.username,
             password: values.password,
         });
 
+        if (data) {
+            toast({
+                title: 'Succesfully logged in',
+            });
+        }
+
         if (error) {
+            toast({
+                title: 'There was a problem logging in',
+            });
             return router.push('/login?message=Could not authenticate user');
         }
 
-        return router.push('/');
+        return router.push('/dashboard');
     }
 
     return (
