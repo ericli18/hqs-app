@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { employees } from '@/drizzle/schema';
+import { employees, shifts } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
 import { eq } from 'drizzle-orm';
 
@@ -9,13 +9,26 @@ export const selectProfile = async () => {
         data: { user },
     } = await supabase.auth.getUser();
     const id = user?.id;
-    console.log(user);
     if (!id) {
         return;
     }
 
     const self = await db.select().from(employees).where(eq(employees.id, id));
     return self[0];
+};
+
+export const getShiftTimes = async () => {
+    const supabase = createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+    const id = user?.id;
+    if (!id) {
+        return;
+    }
+
+    const shiftQuery = await db.select().from(shifts).where(eq(shifts.employee_id, id));
+    return shiftQuery;
 };
 
 export const selectAllEmployees = async () => {

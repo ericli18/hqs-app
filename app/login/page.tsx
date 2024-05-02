@@ -13,7 +13,6 @@ const Page = async () => {
         console.log(error);
         return <div>Something happened, service might be down</div>;
     }
-    console.log(session);
     if (session != null) {
         redirect('/');
     }
