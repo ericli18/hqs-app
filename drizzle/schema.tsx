@@ -12,7 +12,7 @@ export const employees = pgTable('employees', {
 
 export const locations = pgTable('locations', {
     location_id: smallserial('location_id').primaryKey(),
-    name: text('name'),
+    name: text('name').notNull(),
     created_at: timestamp('created_at'),
 });
 

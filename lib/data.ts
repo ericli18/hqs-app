@@ -1,7 +1,8 @@
 import { db } from '@/drizzle/db';
-import { employees, shifts } from '@/drizzle/schema';
+import { employees, shifts, locations } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
 import { eq } from 'drizzle-orm';
+import { type Employee } from '@/app/dashboard/employees/columns';
 
 export const selectProfile = async () => {
     const supabase = createClient();
@@ -31,7 +32,18 @@ export const getShiftTimes = async () => {
     return shiftQuery;
 };
 
-export const selectAllEmployees = async () => {
-    const selectedEmployees = await db.select().from(employees);
+export const selectAllEmployees = async () : Promise<Employee[]> => {
+    const selectedEmployees = await db
+        .select(
+            {
+                id: employees.id,
+                first_name: employees.first_name,
+                last_name: employees.last_name,
+                hqs_id: employees.hqs_id,
+                location: locations.name
+            }
+        )
+        .from(employees)
+        .innerJoin(locations, eq(employees.location, locations.location_id));
     return selectedEmployees;
 };
