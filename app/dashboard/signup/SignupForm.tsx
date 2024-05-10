@@ -135,7 +135,11 @@ const SignupForm = ({ user }: { user: User | null }) => {
                         <FormItem className="mt-6">
                             <FormLabel>Confirm password</FormLabel>
                             <FormControl>
-                                <Input type="text" placeholder="Confirm password" {...field} />
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder="Confirm password"
+                                    {...field}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
