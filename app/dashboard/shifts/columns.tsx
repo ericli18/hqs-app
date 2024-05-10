@@ -15,9 +15,9 @@ export const defaultColumns = [
         cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('start_time', {
-        cell: (info) => dayjs(info.getValue()).format(),
+        cell: (info) => dayjs(info.getValue()).format('ddd DD/MM/YY - hh:mm A'),
     }),
     columnHelper.accessor('end_time', {
-        cell: (info) => dayjs(info.getValue()).format(),
+        cell: (info) => dayjs(info.getValue()).format('ddd DD/MM/YY - hh:mm A'),
     }),
 ];
