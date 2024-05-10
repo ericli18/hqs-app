@@ -66,49 +66,51 @@ const LoginForm = () => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="min-w-[20rem]">
-                <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Email or HQS ID" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem className="mt-6">
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                                <div className="relative">
-                                    <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder="Password"
-                                        {...field}
-                                    />
-                                    <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-gray-400">
-                                        {showPassword ? (
-                                            <EyeOff className="h-6 w-6" onClick={togglePasswordVisibility} />
-                                        ) : (
-                                            <Eye className="h-6 w-6" onClick={togglePasswordVisibility} />
-                                        )}
+                <p className="mb-4 text-sm font-medium text-destructive">{searchParams.get('message')}</p>
+                <div className="grid gap-4">
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Joe@hqsautomotive.com" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Input
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Password"
+                                            {...field}
+                                        />
+                                        <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-gray-400">
+                                            {showPassword ? (
+                                                <EyeOff className="h-6 w-6" onClick={togglePasswordVisibility} />
+                                            ) : (
+                                                <Eye className="h-6 w-6" onClick={togglePasswordVisibility} />
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 <Button type="submit" className="mt-6 w-full">
                     Log in
                 </Button>
-                <p className="text-sm font-medium text-destructive">{searchParams.get('message')}</p>
             </form>
         </Form>
     );
