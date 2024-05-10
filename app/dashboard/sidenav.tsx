@@ -14,7 +14,7 @@ export default function SideNav() {
 
     return (
         <div className="flex h-full flex-col px-3 py-4 md:px-2">
-            <Link className="mb-2 flex h-20 items-end justify-start rounded-md bg-gray-50 p-4 md:h-40" href="/">
+            <Link className="mb-2 grid h-20 place-items-center rounded-md bg-gray-50 p-4 md:h-40" href="/">
                 <div className="w-32 text-white md:w-40"></div>
                 <Image src="/hqs_logo.png" alt="" height={100} width={200} />
             </Link>
