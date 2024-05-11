@@ -1,7 +1,7 @@
 import { db } from '@/drizzle/db';
-import { employees, shifts, locations } from '@/drizzle/schema';
+import { employees, shifts, locations, shift_types} from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
-import { eq } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import { type Employee } from '@/app/dashboard/employees/columns';
 import { type Shift } from '@/app/dashboard/shifts/columns';
 
@@ -29,8 +29,15 @@ export const getShiftTimes = async () : Promise<Shift[]> => {
         return [];
     }
 
-    const shiftQuery = await db.select().from(shifts).where(eq(shifts.employee_id, id));
-    return shiftQuery;
+const selectedShifts = await db
+    .select({
+        ...getTableColumns(shifts),
+        shift_type: shift_types.label
+    })
+    .from(shifts)
+    .innerJoin(shift_types, eq(shifts.shift_type, shift_types.shift_type_id))
+    .where(eq(shifts.employee_id, id))
+    return selectedShifts;
 };
 
 export const selectAllEmployees = async (): Promise<Employee[]> => {

@@ -23,3 +23,8 @@ export const shifts = pgTable('shifts', {
     shift_type: smallint('shift_type'),
     employee_id: uuid('employee_id').references(() => employees.id),
 });
+
+export const shift_types = pgTable('shift_types', {
+    shift_type_id: smallserial('shift_type_id').primaryKey(),
+    label: text('label').notNull()
+})

@@ -5,7 +5,12 @@ import { type InferSelectModel } from 'drizzle-orm';
 import { shifts } from '@/drizzle/schema';
 import dayjs from 'dayjs';
 
-export type Shift = InferSelectModel<typeof shifts>;
+;
+type SelectShift = InferSelectModel<typeof shifts>;
+
+export type Shift = Omit<SelectShift, 'shift_type'> & {
+    shift_type: string;
+};
 const columnHelper = createColumnHelper<Shift>();
 export const defaultColumns = [
     columnHelper.display({
