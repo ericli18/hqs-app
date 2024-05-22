@@ -4,7 +4,6 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { type Shift, defaultColumns } from './columns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-
 export function ShiftDataTable({ data }: { data: Shift[] }) {
     const table = useReactTable({
         data,

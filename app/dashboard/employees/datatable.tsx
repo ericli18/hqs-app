@@ -4,7 +4,6 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { type Employee, defaultColumns } from './columns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-
 export function EmployeeDataTable({ data }: { data: Employee[] }) {
     const table = useReactTable({
         data,

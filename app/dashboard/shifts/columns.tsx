@@ -5,7 +5,6 @@ import { type InferSelectModel } from 'drizzle-orm';
 import { shifts } from '@/drizzle/schema';
 import dayjs from 'dayjs';
 
-;
 type SelectShift = InferSelectModel<typeof shifts>;
 
 export type Shift = Omit<SelectShift, 'shift_type'> & {

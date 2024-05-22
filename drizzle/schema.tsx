@@ -26,5 +26,5 @@ export const shifts = pgTable('shifts', {
 
 export const shift_types = pgTable('shift_types', {
     shift_type_id: smallserial('shift_type_id').primaryKey(),
-    label: text('label').notNull()
-})
+    label: text('label').notNull(),
+});
