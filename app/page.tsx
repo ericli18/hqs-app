@@ -1,8 +1,17 @@
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
-export default function Page() {
+export default async function Page() {
+    const supabase = createClient();
+
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) {
+        redirect('/dashboard');
+    }
+
     return (
         <main className="flex min-h-screen flex-col p-6">
             <div className="flex h-20 shrink-0 items-end rounded-lg bg-cyan-900 p-4 md:h-52"></div>

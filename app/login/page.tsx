@@ -5,16 +5,10 @@ import { redirect } from 'next/navigation';
 const Page = async () => {
     const supabase = createClient();
 
-    const {
-        data: { session },
-        error,
-    } = await supabase.auth.getSession();
-    if (error) {
-        console.log(error);
-        return <div>Something happened, service might be down</div>;
-    }
-    if (session != null) {
-        redirect('/');
+    const { data } = await supabase.auth.getUser();
+    console.log(data)
+    if (data?.user) {
+        redirect('/dashboard');
     }
     return (
         <div className="grid min-h-screen place-items-center">
