@@ -11,6 +11,10 @@ export type Shift = Omit<SelectShift, 'shift_type'> & {
     shift_type: string;
 };
 const columnHelper = createColumnHelper<Shift>();
+// PLANNED SHIFTS
+// See if they're scheduled for work the next day
+// DATE - LOCATION - TYPE - START - END - TOTAL TIME - MEAL TIME - For supervisors only see what shifts they've worked on
+// SCHEDULED - WORKED
 export const defaultColumns = [
     columnHelper.display({
         id: 'actions',
@@ -19,9 +23,9 @@ export const defaultColumns = [
         cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('start_time', {
-        cell: (info) => dayjs(info.getValue()).format('ddd DD/MM/YY - hh:mm A'),
+        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
     }),
     columnHelper.accessor('end_time', {
-        cell: (info) => dayjs(info.getValue()).format('ddd DD/MM/YY - hh:mm A'),
+        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
     }),
 ];

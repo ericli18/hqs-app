@@ -3,6 +3,7 @@ create table public.employees (
   first_name text,
   last_name text,
   hqs_id text,
+  email varchar,
 
   primary key (id)
 );

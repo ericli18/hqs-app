@@ -5,9 +5,9 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.employees (id, first_name, last_name, hqs_id, "location")
+  insert into public.employees (id, first_name, last_name, hqs_id, "location", email)
   values (new.id, new.raw_user_meta_data ->> 'first_name', new.raw_user_meta_data->> 'last_name',
-          new.raw_user_meta_data ->> 'hqs_id', (new.raw_user_meta_data->>'location')::smallint);
+          new.raw_user_meta_data ->> 'hqs_id', (new.raw_user_meta_data->>'location')::smallint, new.email);
   return new;
 end;
 $$;
