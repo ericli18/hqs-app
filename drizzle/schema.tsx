@@ -16,15 +16,17 @@ export const locations = pgTable('locations', {
     created_at: timestamp('created_at'),
 });
 
-export const shifts = pgTable('shifts', {
-    shift_id: bigserial('shift_id', { mode: 'bigint' }).primaryKey(),
-    start_time: timestamp('start_time'),
-    end_time: timestamp('end_time'),
-    shift_type: smallint('shift_type'),
+export const clocks = pgTable('clocks', {
+    clock_id: bigserial('clock_id', { mode: 'bigint' }).primaryKey(),
+    clock_time: timestamp('clock_time'),
+    clock_type: smallint('clock_type'),
     employee_id: uuid('employee_id').references(() => employees.id),
+    supervisor_id: uuid('supervisor_id').references(() => employees.id),
+    location: smallint('location_id')
+        .references(() => locations.location_id)
 });
 
-export const shift_types = pgTable('shift_types', {
-    shift_type_id: smallserial('shift_type_id').primaryKey(),
+export const clock_types = pgTable('clock_types', {
+    clock_type_id: smallserial('clock_type_id').primaryKey(),
     label: text('label').notNull(),
 });

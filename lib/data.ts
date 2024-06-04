@@ -1,9 +1,9 @@
 import { db } from '@/drizzle/db';
-import { employees, shifts, locations, shift_types } from '@/drizzle/schema';
+import { employees, clocks, locations, clock_types } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
-import { eq, getTableColumns } from 'drizzle-orm';
+import { eq, getTableColumns, or} from 'drizzle-orm';
 import { type Employee } from '@/app/dashboard/employees/columns';
-import { type Shift } from '@/app/dashboard/shifts/columns';
+import { type Clock } from '@/app/dashboard/clocks/columns';
 
 export const selectProfile = async () => {
     const supabase = createClient();
@@ -19,7 +19,7 @@ export const selectProfile = async () => {
     return self[0];
 };
 
-export const getShiftTimes = async (): Promise<Shift[]> => {
+export const getClockTimes = async (): Promise<Clock[]> => {
     const supabase = createClient();
     const {
         data: { user },
@@ -28,16 +28,17 @@ export const getShiftTimes = async (): Promise<Shift[]> => {
     if (!id) {
         return [];
     }
-
-    const selectedShifts = await db
+    const selectedClocks = await db
         .select({
-            ...getTableColumns(shifts),
-            shift_type: shift_types.label,
+            ...getTableColumns(clocks),
+            location: locations.name,
+            clock_type: clock_types.label
         })
-        .from(shifts)
-        .innerJoin(shift_types, eq(shifts.shift_type, shift_types.shift_type_id))
-        .where(eq(shifts.employee_id, id));
-    return selectedShifts;
+        .from(clocks)
+        .innerJoin(locations, eq(clocks.location, locations.location_id))
+        .innerJoin(clock_types, eq(clock_types.clock_type_id, clocks.clock_type))
+        .where(or(eq(clocks.supervisor_id, id), eq(clocks.employee_id, id)));
+    return selectedClocks;
 };
 
 export const selectAllEmployees = async (): Promise<Employee[]> => {

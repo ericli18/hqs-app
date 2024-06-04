@@ -11,11 +11,12 @@ function getRandomOffset() {
     return Math.floor(Math.random() * 21) - 10; // Generate a random number between -10 and 10
   }
 
-function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs) {
+function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs, supervisor: string) {
     let clocksql = '';
     for (let shift = 0; shift < numShifts; shift++) {
         const dayOffset = Math.floor(Math.random() * 7); // 0 to 6 days in the current week
         const shiftType = Math.floor(Math.random() * 3) + 1; // Random shift type between 1 and 3
+        const location = Math.floor(Math.random() * 3) + 1; // random location between 1 and 3 hardcoded values
         const shiftDate = startDate.add(dayOffset, 'day');
 
         let startHour: number = 0;
@@ -40,10 +41,10 @@ function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs) {
         console.log('Lunch Out:', lunch_out.format());
         console.log('Punch Out:', punch_out.format()); */
       
-        clocksql += `('${punch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${1}, ${userId}),\n`;
-        clocksql += `('${lunch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${3}, ${userId}),\n`;
-        clocksql += `('${lunch_out.format('YYYY-MM-DD HH:mm:ssZ')}', ${4}, ${userId}),\n`;
-        clocksql += `('${punch_out.format('YYYY-MM-DD HH:mm:ssZ')}', ${2}, ${userId}),\n`;
+        clocksql += `( ${userId}, ${supervisor}, ${1}, '${punch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
+        clocksql += `( ${userId}, ${supervisor}, ${3}, '${lunch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
+        clocksql += `( ${userId}, ${supervisor}, ${4}, '${lunch_out.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
+        clocksql += `( ${userId}, ${supervisor}, ${2}, '${punch_out.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
     }
     return clocksql.slice(0, -2); // Removes the last comma and newline
 }
@@ -72,15 +73,13 @@ VALUES
 ('Austin'),
 ('Germany');
 
---Clock type seeding
+--Employees seeding and shifts seeding 
 INSERT INTO public.clock_types (label)
 VALUES
-('PUNCH_IN'),
-('PUNCH_OUT'),
+('CLOCK_IN'),
+('CLOCK_OUT'),
 ('LUNCH_IN'),
 ('LUNCH_OUT');
-
---Employees seeding and shifts seeding 
 
 DO $$
 DECLARE
@@ -94,9 +93,9 @@ BEGIN
     user_id_eric := public.create_user('eric@hqs.com', '123ABC', 'Eric', 'Li', 'HQS0001', 1::smallint);
 
     -- Assign random shifts
-    INSERT INTO public.clocks (start_time, clock_type, employee_id)
+    INSERT INTO public.clocks (employee_id, supervisor_id, clock_type, clock_time, location_id)
     VALUES
-    ${getClocks('user_id_eric', 9, startOfThisWeek)};F
+    ${getClocks('user_id_jane', 9, startOfThisWeek, 'user_id_eric')};
  END
 $$;
 `;

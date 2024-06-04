@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import { getShiftTimes } from '@/lib/data';
+import { getClockTimes } from '@/lib/data';
 import { ShiftDataTable } from './datatable';
 
 export default async function Page() {
@@ -10,10 +10,10 @@ export default async function Page() {
     if (error || !data?.user) {
         redirect('/login');
     }
-    const shifts = await getShiftTimes();
+    const clocks = await getClockTimes();
     return (
         <div>
-            <ShiftDataTable data={shifts} />
+            <ShiftDataTable data={clocks} />
         </div>
     );
 }
