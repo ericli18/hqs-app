@@ -30,6 +30,9 @@ export const defaultColumns = [
     columnHelper.display({
         id: 'actions',
     }),
+    columnHelper.accessor('employee.first_name', {
+        cell: (info) => info.getValue()
+    }),
     columnHelper.accessor('clock_time', {
         header: 'Time',
         id: 'clock_time',

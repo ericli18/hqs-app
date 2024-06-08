@@ -13,8 +13,9 @@ function getRandomOffset() {
 
 function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs, supervisor: string) {
     let clocksql = '';
+    let dayOffset = 0;
     for (let shift = 0; shift < numShifts; shift++) {
-        const dayOffset = Math.floor(Math.random() * 7); // 0 to 6 days in the current week
+        dayOffset += 2;
         const shiftType = Math.floor(Math.random() * 3) + 1; // Random shift type between 1 and 3
         const location = Math.floor(Math.random() * 3) + 1; // random location between 1 and 3 hardcoded values
         const shiftDate = startDate.add(dayOffset, 'day');
@@ -95,7 +96,8 @@ BEGIN
     -- Assign random shifts
     INSERT INTO public.clocks (employee_id, supervisor_id, clock_type, clock_time, location_id)
     VALUES
-    ${getClocks('user_id_jane', 9, startOfThisWeek, 'user_id_eric')};
+    ${getClocks('user_id_jane', 5, startOfThisWeek, 'user_id_eric')},
+    ${getClocks('user_id_john', 5, startOfThisWeek, 'user_id_eric')};
  END
 $$;
 `;

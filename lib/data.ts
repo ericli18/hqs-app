@@ -1,9 +1,9 @@
 import { db } from '@/drizzle/db';
 import { employees, clocks, locations, clock_types } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
-import { eq, getTableColumns, or } from 'drizzle-orm';
+import { desc, eq, getTableColumns, or } from 'drizzle-orm';
 import { type Employee } from '@/app/dashboard/employees/columns';
-import { type Clock } from '@/app/dashboard/clocks/columns';
+import { type Clock } from '@/app/dashboard/clocks/tables/selfClockColumns';
 import { alias } from 'drizzle-orm/pg-core';
 
 export const selectProfile = async () => {
@@ -43,7 +43,7 @@ export const getClockTimes = async (): Promise<Clock[]> => {
                 last_name: supervisors.last_name
             },
             employee: {
-                id:employees.id,
+                id: employees.id,
                 first_name: employees.first_name,
                 last_name: employees.last_name,
             }
@@ -53,6 +53,8 @@ export const getClockTimes = async (): Promise<Clock[]> => {
         .innerJoin(clock_types, eq(clock_types.clock_type_id, clocks.clock_type))
         .innerJoin(employees, eq(clocks.employee_id, employees.id))
         .innerJoin(supervisors, eq(clocks.supervisor_id, supervisors.id))
+        .groupBy(employees.id, clocks.clock_id, clock_types.label, locations.name, supervisors.id)
+        .orderBy(desc(clocks.clock_time))
         .where(or(eq(clocks.supervisor_id, id), eq(clocks.employee_id, id)));
     return selectedClocks;
 };

@@ -58,6 +58,7 @@ const LoginForm = () => {
                 title: 'There was a problem logging in',
             });
             return router.push('/login?message=Could not authenticate user');
+            console.log(error);
         }
 
         return router.push('/dashboard');

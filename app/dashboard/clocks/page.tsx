@@ -1,7 +1,10 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { getClockTimes } from '@/lib/data';
-import { ShiftDataTable } from './datatable';
+import { ShiftDataTable } from './tables/datatable';
+import { SelfTimeTable } from './tables/selfTimetable';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 
 export default async function Page() {
     const supabase = createClient();
@@ -12,8 +15,18 @@ export default async function Page() {
     }
     const clocks = await getClockTimes();
     return (
-        <div>
-            <ShiftDataTable data={clocks} />
-        </div>
+        <Tabs defaultValue="selfClocks" className="w-full">
+            <TabsList>
+                <TabsTrigger value="selfClocks">Your clocks</TabsTrigger>
+                <TabsTrigger value="selfTimes">Your times</TabsTrigger>
+            </TabsList>
+            <TabsContent value="selfClocks">
+                <ShiftDataTable data={clocks} />
+            </TabsContent>
+            <TabsContent value="selfTimes">
+                <SelfTimeTable data={clocks} id={data.user.id} />
+            </TabsContent>
+        </Tabs>
     );
+
 }
