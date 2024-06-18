@@ -8,6 +8,9 @@ export const employees = pgTable('employees', {
     location: smallint('location')
         .references(() => locations.location_id)
         .notNull(),
+    role: smallint('role')
+        .references(() => roles.role_id)
+        .notNull(),
 });
 
 export const locations = pgTable('locations', {
@@ -22,11 +25,16 @@ export const clocks = pgTable('clocks', {
     clock_type: smallint('clock_type'),
     employee_id: uuid('employee_id').references(() => employees.id),
     supervisor_id: uuid('supervisor_id').references(() => employees.id),
-    location: smallint('location_id')
-        .references(() => locations.location_id)
+    location: smallint('location_id').references(() => locations.location_id),
 });
 
 export const clock_types = pgTable('clock_types', {
     clock_type_id: smallserial('clock_type_id').primaryKey(),
     label: text('label').notNull(),
+});
+
+export const roles = pgTable('roles', {
+    role_id: smallserial('role_id').primaryKey(),
+    name: text('name').notNull(),
+    created_at: timestamp('created_at'),
 });

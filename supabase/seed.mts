@@ -9,7 +9,7 @@ dayjs.extend(utc);
 
 function getRandomOffset() {
     return Math.floor(Math.random() * 21) - 10; // Generate a random number between -10 and 10
-  }
+}
 
 function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs, supervisor: string) {
     let clocksql = '';
@@ -36,12 +36,12 @@ function getClocks(userId: string, numShifts: number, startDate: dayjs.Dayjs, su
         const lunch_in = punch_in.add(3, 'hour').add(getRandomOffset(), 'minute');
         const lunch_out = lunch_in.add(1, 'hour').add(getRandomOffset(), 'minute');
         const punch_out = punch_in.add(8, 'hour').add(getRandomOffset(), 'minute');
-      
-       /*  console.log('Punch In:', punch_in.format());
+
+        /*  console.log('Punch In:', punch_in.format());
         console.log('Lunch In:', lunch_in.format());
         console.log('Lunch Out:', lunch_out.format());
         console.log('Punch Out:', punch_out.format()); */
-      
+
         clocksql += `( ${userId}, ${supervisor}, ${1}, '${punch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
         clocksql += `( ${userId}, ${supervisor}, ${3}, '${lunch_in.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
         clocksql += `( ${userId}, ${supervisor}, ${4}, '${lunch_out.format('YYYY-MM-DD HH:mm:ssZ')}', ${location}),\n`;
@@ -81,6 +81,11 @@ VALUES
 ('CLOCK_OUT'),
 ('LUNCH_IN'),
 ('LUNCH_OUT');
+
+INSERT INTO public.roles (name)
+VALUES
+('admin'),
+('supervisor');
 
 DO $$
 DECLARE

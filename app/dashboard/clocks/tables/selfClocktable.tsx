@@ -4,9 +4,9 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 import { type Clock, defaultColumns } from './selfClockColumns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-export function ShiftDataTable({ data }: { data: Clock[] }) {
+export function SelfClockTable({ data, id }: { data: Clock[], id: string }) {
     const table = useReactTable({
-        data,
+        data: data.filter(clock => clock.employee.id == id),
         columns: defaultColumns,
         getCoreRowModel: getCoreRowModel(),
     });

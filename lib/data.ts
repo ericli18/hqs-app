@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { employees, clocks, locations, clock_types } from '@/drizzle/schema';
+import { employees, clocks, locations, clock_types, roles } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
 import { desc, eq, getTableColumns, or } from 'drizzle-orm';
 import { type Employee } from '@/app/dashboard/employees/columns';
@@ -9,14 +9,15 @@ import { alias } from 'drizzle-orm/pg-core';
 export const selectProfile = async () => {
     const supabase = createClient();
     const {
+        error,
         data: { user },
     } = await supabase.auth.getUser();
     const id = user?.id;
-    if (!id) {
-        return;
+    if (error || !id) {
+        return null;
     }
 
-    const self = await db.select().from(employees).where(eq(employees.id, id));
+    const self = await db.select().from(employees).leftJoin(roles, eq(employees.role, roles.role_id)).where(eq(employees.id, id));
     return self[0];
 };
 
@@ -29,7 +30,6 @@ export const getClockTimes = async (): Promise<Clock[]> => {
     if (!id) {
         return [];
     }
-    console.log(id);
     const supervisors = alias(employees, "supervisor");
 
     const selectedClocks = await db
@@ -67,6 +67,7 @@ export const selectAllEmployees = async (): Promise<Employee[]> => {
             last_name: employees.last_name,
             hqs_id: employees.hqs_id,
             location: locations.name,
+            role: employees.role
         })
         .from(employees)
         .innerJoin(locations, eq(employees.location, locations.location_id));

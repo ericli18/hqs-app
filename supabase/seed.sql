@@ -14,6 +14,11 @@ VALUES
 ('LUNCH_IN'),
 ('LUNCH_OUT');
 
+INSERT INTO public.roles (name)
+VALUES
+('admin'),
+('supervisor');
+
 DO $$
 DECLARE
     user_id_john uuid;
@@ -28,46 +33,46 @@ BEGIN
     -- Assign random shifts
     INSERT INTO public.clocks (employee_id, supervisor_id, clock_type, clock_time, location_id)
     VALUES
-    ( user_id_jane, user_id_eric, 1, '2024-06-05 15:50:00-05:00', 2),
-( user_id_jane, user_id_eric, 3, '2024-06-05 18:48:00-05:00', 2),
-( user_id_jane, user_id_eric, 4, '2024-06-05 19:41:00-05:00', 2),
-( user_id_jane, user_id_eric, 2, '2024-06-05 23:52:00-05:00', 2),
-( user_id_jane, user_id_eric, 1, '2024-06-07 15:52:00-05:00', 3),
-( user_id_jane, user_id_eric, 3, '2024-06-07 18:53:00-05:00', 3),
-( user_id_jane, user_id_eric, 4, '2024-06-07 19:52:00-05:00', 3),
-( user_id_jane, user_id_eric, 2, '2024-06-07 23:55:00-05:00', 3),
-( user_id_jane, user_id_eric, 1, '2024-06-09 08:02:00-05:00', 3),
-( user_id_jane, user_id_eric, 3, '2024-06-09 10:57:00-05:00', 3),
-( user_id_jane, user_id_eric, 4, '2024-06-09 11:50:00-05:00', 3),
-( user_id_jane, user_id_eric, 2, '2024-06-09 16:11:00-05:00', 3),
-( user_id_jane, user_id_eric, 1, '2024-06-11 07:50:00-05:00', 3),
-( user_id_jane, user_id_eric, 3, '2024-06-11 10:55:00-05:00', 3),
-( user_id_jane, user_id_eric, 4, '2024-06-11 12:01:00-05:00', 3),
-( user_id_jane, user_id_eric, 2, '2024-06-11 15:53:00-05:00', 3),
-( user_id_jane, user_id_eric, 1, '2024-06-13 07:56:00-05:00', 1),
-( user_id_jane, user_id_eric, 3, '2024-06-13 10:58:00-05:00', 1),
-( user_id_jane, user_id_eric, 4, '2024-06-13 11:54:00-05:00', 1),
-( user_id_jane, user_id_eric, 2, '2024-06-13 15:51:00-05:00', 1),
-    ( user_id_john, user_id_eric, 1, '2024-06-05 16:00:00-05:00', 3),
-( user_id_john, user_id_eric, 3, '2024-06-05 18:56:00-05:00', 3),
-( user_id_john, user_id_eric, 4, '2024-06-05 20:01:00-05:00', 3),
-( user_id_john, user_id_eric, 2, '2024-06-06 00:02:00-05:00', 3),
-( user_id_john, user_id_eric, 1, '2024-06-07 08:07:00-05:00', 2),
-( user_id_john, user_id_eric, 3, '2024-06-07 11:15:00-05:00', 2),
-( user_id_john, user_id_eric, 4, '2024-06-07 12:23:00-05:00', 2),
-( user_id_john, user_id_eric, 2, '2024-06-07 16:04:00-05:00', 2),
-( user_id_john, user_id_eric, 1, '2024-06-09 08:09:00-05:00', 3),
-( user_id_john, user_id_eric, 3, '2024-06-09 11:16:00-05:00', 3),
-( user_id_john, user_id_eric, 4, '2024-06-09 12:18:00-05:00', 3),
-( user_id_john, user_id_eric, 2, '2024-06-09 16:15:00-05:00', 3),
-( user_id_john, user_id_eric, 1, '2024-06-11 07:59:00-05:00', 3),
-( user_id_john, user_id_eric, 3, '2024-06-11 10:55:00-05:00', 3),
-( user_id_john, user_id_eric, 4, '2024-06-11 11:49:00-05:00', 3),
-( user_id_john, user_id_eric, 2, '2024-06-11 15:53:00-05:00', 3),
-( user_id_john, user_id_eric, 1, '2024-06-12 23:54:00-05:00', 2),
-( user_id_john, user_id_eric, 3, '2024-06-13 02:45:00-05:00', 2),
-( user_id_john, user_id_eric, 4, '2024-06-13 03:41:00-05:00', 2),
-( user_id_john, user_id_eric, 2, '2024-06-13 07:48:00-05:00', 2);
+    ( user_id_jane, user_id_eric, 1, '2024-06-18 23:59:00-05:00', 1),
+( user_id_jane, user_id_eric, 3, '2024-06-19 02:53:00-05:00', 1),
+( user_id_jane, user_id_eric, 4, '2024-06-19 03:58:00-05:00', 1),
+( user_id_jane, user_id_eric, 2, '2024-06-19 07:54:00-05:00', 1),
+( user_id_jane, user_id_eric, 1, '2024-06-20 23:55:00-05:00', 1),
+( user_id_jane, user_id_eric, 3, '2024-06-21 03:00:00-05:00', 1),
+( user_id_jane, user_id_eric, 4, '2024-06-21 03:55:00-05:00', 1),
+( user_id_jane, user_id_eric, 2, '2024-06-21 07:54:00-05:00', 1),
+( user_id_jane, user_id_eric, 1, '2024-06-23 08:04:00-05:00', 1),
+( user_id_jane, user_id_eric, 3, '2024-06-23 11:14:00-05:00', 1),
+( user_id_jane, user_id_eric, 4, '2024-06-23 12:05:00-05:00', 1),
+( user_id_jane, user_id_eric, 2, '2024-06-23 16:03:00-05:00', 1),
+( user_id_jane, user_id_eric, 1, '2024-06-25 15:53:00-05:00', 3),
+( user_id_jane, user_id_eric, 3, '2024-06-25 18:55:00-05:00', 3),
+( user_id_jane, user_id_eric, 4, '2024-06-25 19:55:00-05:00', 3),
+( user_id_jane, user_id_eric, 2, '2024-06-26 00:03:00-05:00', 3),
+( user_id_jane, user_id_eric, 1, '2024-06-27 15:58:00-05:00', 2),
+( user_id_jane, user_id_eric, 3, '2024-06-27 19:06:00-05:00', 2),
+( user_id_jane, user_id_eric, 4, '2024-06-27 20:09:00-05:00', 2),
+( user_id_jane, user_id_eric, 2, '2024-06-27 23:51:00-05:00', 2),
+    ( user_id_john, user_id_eric, 1, '2024-06-19 08:03:00-05:00', 1),
+( user_id_john, user_id_eric, 3, '2024-06-19 11:02:00-05:00', 1),
+( user_id_john, user_id_eric, 4, '2024-06-19 12:10:00-05:00', 1),
+( user_id_john, user_id_eric, 2, '2024-06-19 16:01:00-05:00', 1),
+( user_id_john, user_id_eric, 1, '2024-06-21 16:07:00-05:00', 1),
+( user_id_john, user_id_eric, 3, '2024-06-21 19:16:00-05:00', 1),
+( user_id_john, user_id_eric, 4, '2024-06-21 20:16:00-05:00', 1),
+( user_id_john, user_id_eric, 2, '2024-06-21 23:59:00-05:00', 1),
+( user_id_john, user_id_eric, 1, '2024-06-23 00:06:00-05:00', 3),
+( user_id_john, user_id_eric, 3, '2024-06-23 03:00:00-05:00', 3),
+( user_id_john, user_id_eric, 4, '2024-06-23 04:10:00-05:00', 3),
+( user_id_john, user_id_eric, 2, '2024-06-23 08:15:00-05:00', 3),
+( user_id_john, user_id_eric, 1, '2024-06-24 23:54:00-05:00', 1),
+( user_id_john, user_id_eric, 3, '2024-06-25 02:51:00-05:00', 1),
+( user_id_john, user_id_eric, 4, '2024-06-25 03:55:00-05:00', 1),
+( user_id_john, user_id_eric, 2, '2024-06-25 08:04:00-05:00', 1),
+( user_id_john, user_id_eric, 1, '2024-06-27 08:08:00-05:00', 1),
+( user_id_john, user_id_eric, 3, '2024-06-27 11:08:00-05:00', 1),
+( user_id_john, user_id_eric, 4, '2024-06-27 12:15:00-05:00', 1),
+( user_id_john, user_id_eric, 2, '2024-06-27 16:01:00-05:00', 1);
  END
 $$;
 

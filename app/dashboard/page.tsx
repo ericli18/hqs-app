@@ -10,5 +10,5 @@ export default async function Page() {
         redirect('/login');
     }
     const self = await selectProfile();
-    return <div>{self?.first_name}</div>;
+    return <div>{self?.employees.first_name}</div>;
 }

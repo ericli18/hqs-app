@@ -1,20 +1,20 @@
 'use client';
 
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { type Clock } from './selfClockColumns';
-import { type ClockSeries, defaultColumns } from './selfTimeColumns';
-import dayjs from 'dayjs';
+import { type Clock, defaultColumns } from './allClockColumns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-export function SelfTimeTable({ data, id }: { data: Clock[], id: string }) {
-    //this function will assume that everything is already grouped for 
-    const filtered = data.filter((val) => val.employee_id == id);
-    const sorted = filtered.toSorted((a, b) => dayjs(b.clock_time).diff(dayjs(a.clock_time)));
-    console.log(sorted);
-    
-    const newData: ClockSeries[] = [];
-
-
+export function AllClockTable({ data, role, id }: { data: Clock[]; role: string|undefined; id: string }) {
+    let newData: Clock[];
+    if (role == 'admin') {
+        newData = data;
+    } else if (role == 'supervisor') {
+        newData = data.filter((clock) => clock.supervisor.id == id);
+    }
+    else
+    {
+        newData = [];
+    }
     const table = useReactTable({
         data: newData,
         columns: defaultColumns,

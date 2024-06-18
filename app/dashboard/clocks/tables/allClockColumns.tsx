@@ -31,6 +31,10 @@ export const defaultColumns = [
     columnHelper.display({
         id: 'actions',
     }),
+    columnHelper.accessor((clock) => clock.employee.first_name + " " + clock.employee.last_name, {
+        header: 'Employee',
+        cell: (info) => info.getValue()
+    }),
     columnHelper.accessor('clock_time', {
         header: 'Time',
         id: 'clock_time',
@@ -38,10 +42,6 @@ export const defaultColumns = [
     }),
     columnHelper.accessor('clock_type', {
         header: 'Type',
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor((clock) => `${clock.supervisor.first_name} ${clock.supervisor.last_name}`, {
-        header: 'Supervisor',
         cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('location', {

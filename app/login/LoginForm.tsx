@@ -57,8 +57,8 @@ const LoginForm = () => {
             toast({
                 title: 'There was a problem logging in',
             });
-            return router.push('/login?message=Could not authenticate user');
             console.log(error);
+            return router.push('/login?message=Could not authenticate user');
         }
 
         return router.push('/dashboard');
