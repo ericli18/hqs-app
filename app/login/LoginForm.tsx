@@ -16,8 +16,7 @@ import { useToast } from '@/components/ui/use-toast';
 const formSchema = z.object({
     username: z
         .string()
-        .email({ message: 'Must be an email or HQS ID' })
-        .or(z.string().toUpperCase().startsWith('HQS', { message: 'Must be an email or HQS ID' })),
+        .email({ message: 'Must be an email' }),
     password: z.string().min(5, { message: 'Must be 5 or more characters' }),
 });
 
