@@ -1,12 +1,13 @@
 'use client';
 
-import { Users, HomeIcon, BookText } from 'lucide-react';
+import { Users, HomeIcon, BookText, CalendarClock } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
 const links = [
     { name: 'Home', href: '/dashboard', icon: HomeIcon },
+    { name: 'Shifts', href: '/dashboard/shifts', icon: CalendarClock},
     {
         name: 'Clocks',
         href: '/dashboard/clocks',
