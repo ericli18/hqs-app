@@ -3,7 +3,7 @@ create table public.employees (
   id uuid not null references auth.users,
   first_name text,
   last_name text,
-  hqs_id text,
+  hqs_id text unique not null,
   email varchar,
 
   primary key (id)
