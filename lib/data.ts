@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { employees, clocks, locations, clock_types, roles } from '@/drizzle/schema';
+import { employees, clocks, locations, clock_types, roles, shift_assignments, shifts } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
 import { desc, eq, getTableColumns, or } from 'drizzle-orm';
 import { type Employee } from '@/app/dashboard/employees/columns';
@@ -17,7 +17,11 @@ export const selectProfile = async () => {
         return null;
     }
 
-    const self = await db.select().from(employees).leftJoin(roles, eq(employees.role, roles.role_id)).where(eq(employees.id, id));
+    const self = await db
+        .select()
+        .from(employees)
+        .leftJoin(roles, eq(employees.role, roles.role_id))
+        .where(eq(employees.id, id));
     return self[0];
 };
 
@@ -30,7 +34,7 @@ export const getClockTimes = async (): Promise<Clock[]> => {
     if (!id) {
         return [];
     }
-    const supervisors = alias(employees, "supervisor");
+    const supervisors = alias(employees, 'supervisor');
 
     const selectedClocks = await db
         .select({
@@ -40,13 +44,13 @@ export const getClockTimes = async (): Promise<Clock[]> => {
             supervisor: {
                 id: supervisors.id,
                 first_name: supervisors.first_name,
-                last_name: supervisors.last_name
+                last_name: supervisors.last_name,
             },
             employee: {
                 id: employees.id,
                 first_name: employees.first_name,
                 last_name: employees.last_name,
-            }
+            },
         })
         .from(clocks)
         .innerJoin(locations, eq(clocks.location, locations.location_id))
@@ -67,9 +71,26 @@ export const selectAllEmployees = async (): Promise<Employee[]> => {
             last_name: employees.last_name,
             hqs_id: employees.hqs_id,
             location: locations.name,
-            role: employees.role
+            role: employees.role,
         })
         .from(employees)
         .innerJoin(locations, eq(employees.location, locations.location_id));
     return selectedEmployees;
+};
+
+export const getShifts = async (id: string) => {
+    const selectedShifts = await db
+        .select({
+            location: locations.name,
+            start_time: shifts.start_time,
+            end_time: shifts.end_time,
+            employee_id: employees.id
+        })
+
+        .from(shift_assignments)
+        .innerJoin(shifts, eq(shifts.shift_id, shift_assignments.shift_id))
+        .innerJoin(employees, eq(employees.id, shift_assignments.employee_id))
+        .innerJoin(locations, eq(locations.location_id, shifts.location))
+        .where(eq(shift_assignments.employee_id, id));
+    return selectedShifts;
 };
