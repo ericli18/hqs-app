@@ -1,4 +1,4 @@
-import SignupForm from './SignupForm';
+import { SignupForm } from './SignupForm';
 import { createClient } from '@/utils/supabase/server';
 
 const Page = async () => {
@@ -7,7 +7,11 @@ const Page = async () => {
         data: { user },
     } = await supabase.auth.getUser();
 
-    return <SignupForm user={user} />;
+    return (
+        <div className="mx-auto max-w-xl">
+            <SignupForm />
+        </div>
+    );
 };
 
 export default Page;
