@@ -3,14 +3,14 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 
-export type Shift = {
+export type Schedule = {
     location: string,
     start_time: Date,
     end_time: Date,
     employee_id: string
 }
 
-const columnHelper = createColumnHelper<Shift>();
+const columnHelper = createColumnHelper<Schedule>();
 
 export const defaultColumns = [
     columnHelper.display({
