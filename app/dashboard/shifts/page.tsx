@@ -25,9 +25,7 @@ export default async function Page() {
         label: loc.name,
         value: loc.location_id,
     }));
-    console.log(emps);
     const shifts = await getShifts(user.employees.id);
-    console.log(shifts);
 
     return (
         <Tabs defaultValue="shifts" className="w-full">

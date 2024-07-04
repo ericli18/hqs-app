@@ -77,8 +77,9 @@ const AddShiftForm = ({
         const selectedValues = selectedEmployees.map((e) => e.value).filter(Boolean);
         setAvailableEmployees(employees.filter((e) => !selectedValues.includes(e.value)));
     }, [form.getValues('employees'), employees]);
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        await submit(values);
     }
 
     return (
