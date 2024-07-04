@@ -13,6 +13,8 @@ export default async function Page() {
     const employees: Employee[] = await selectAllEmployees();
     return (
         <div>
+            <h1>Team</h1>
+            <p>Invite new memebers in your team</p>
             <EmployeeDataTable data={employees} />
         </div>
     );

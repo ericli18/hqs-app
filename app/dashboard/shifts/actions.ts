@@ -6,7 +6,17 @@ import { db } from '@/drizzle/db';
 import { shifts, shift_assignments } from '@/drizzle/schema';
 import dayjs from 'dayjs';
 
-export const submit = async (values: z.infer<typeof formSchema>) => {
+type shift = typeof shifts.$inferInsert;
+
+export const submit = async (
+    values: z.infer<typeof formSchema>
+): Promise<{
+    success: boolean;
+    message: string;
+    issues?: string[];
+    error?: string;
+    data?: shift;
+}> => {
     const parsed = formSchema.safeParse(values);
     if (!parsed.success) {
         return {
@@ -21,7 +31,6 @@ export const submit = async (values: z.infer<typeof formSchema>) => {
             const startDateTime = dayjs(parsed.data.startDate + ' ' + parsed.data.startTime).toDate();
             const endDateTime = dayjs(parsed.data.endDate + ' ' + parsed.data.endTime).toDate();
 
-            // Insert the shift
             const [insertedShift] = await tx
                 .insert(shifts)
                 .values({
@@ -31,9 +40,9 @@ export const submit = async (values: z.infer<typeof formSchema>) => {
                 })
                 .returning();
 
-            const shiftAssignments = parsed.data.employees.map(employee => ({
+            const shiftAssignments = parsed.data.employees.map((employee) => ({
                 shift_id: insertedShift.shift_id,
-                employee_id: employee.value, 
+                employee_id: employee.value,
             }));
 
             await tx.insert(shift_assignments).values(shiftAssignments);
@@ -54,4 +63,4 @@ export const submit = async (values: z.infer<typeof formSchema>) => {
             error: error instanceof Error ? error.message : 'Unknown error',
         };
     }
-}
+};

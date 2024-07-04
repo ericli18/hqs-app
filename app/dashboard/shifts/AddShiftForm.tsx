@@ -1,19 +1,40 @@
 'use client';
-import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { z } from 'zod';
 
 import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
+import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useToast } from '@/components/ui/use-toast';
+
 import { submit } from './actions';
 import { formSchema } from './schema';
+import dayjs from 'dayjs';
+
+const formatShiftTimeRange = (start: Date | string | undefined, end: Date | string | undefined) => {
+    if (!start || !end) {
+        return '';
+    }
+    const startDate = dayjs(start);
+    const endDate = dayjs(end);
+
+    if (startDate.month() === endDate.month() && startDate.date() === endDate.date()) {
+        return `${startDate.format('MMMM D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
+    } else if (startDate.month() === endDate.month()) {
+        return `${startDate.format('MMMM D')} to ${endDate.format('D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
+    } else {
+        return `${startDate.format('MMMM D')} to ${endDate.format('MMMM D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
+    }
+};
 
 const AddShiftForm = ({
     employees,
@@ -23,6 +44,7 @@ const AddShiftForm = ({
     locations: { label: string; value: number }[];
 }) => {
     const [openPopover, setOpenPopover] = useState<string | null>(null);
+    const { toast } = useToast();
     if (!employees) return <div>Loading...</div>;
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -50,7 +72,20 @@ const AddShiftForm = ({
     }, [form.getValues('employees'), employees]);
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        await submit(values);
+        const res = await submit(values);
+        if (res.success) {
+            toast({
+                title: res.message,
+                description: formatShiftTimeRange(res.data?.start_time, res.data?.end_time),
+            });
+            form.reset();
+        } else {
+            toast({
+                variant: "destructive",
+                title: res.message,
+            });
+            console.log(res.error || res.issues);
+        }
     }
 
     return (
@@ -249,7 +284,7 @@ const AddShiftForm = ({
                                             remove(index);
                                         }}
                                         aria-label={`Remove employee ${field.value.label || index + 1}`}
-                                        className='text-red-600 hover:text-red-700'
+                                        className="text-red-600 hover:text-red-700"
                                     >
                                         <UserRoundMinus />
                                     </Button>
