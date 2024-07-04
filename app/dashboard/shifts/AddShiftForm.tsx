@@ -9,40 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
-const formSchema = z.object({
-    employees: z
-        .array(
-            z.object({
-                label: z.string(),
-                value: z.string(),
-            })
-        )
-        .refine(
-            (employees) => {
-                const values = employees.map((e) => e.value);
-                return new Set(values).size === values.length;
-            },
-            {
-                message: 'Duplicate employees are not allowed',
-            }
-        ),
-    startDate: z.string().date('Invalid start date format'),
-
-    startTime: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, {
-        message: 'Invalid start time format. Use HH:mm (24-hour format).',
-    }),
-
-    endDate: z.string().date('Invalid end date format'),
-
-    endTime: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/, {
-        message: 'Invalid end time format. Use HH:mm (24-hour format).',
-    }),
-    location: z.number(),
-});
+import { submit } from './actions';
+import { formSchema } from './schema';
 
 const AddShiftForm = ({
     employees,
@@ -57,7 +28,7 @@ const AddShiftForm = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            employees: [{ label: '', value: '' }],
+            employees: [],
             startDate: '',
             startTime: '',
             endDate: '',
@@ -66,7 +37,7 @@ const AddShiftForm = ({
         },
     });
 
-    const { fields, append } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         name: 'employees',
         control: form.control,
     });
@@ -220,56 +191,70 @@ const AddShiftForm = ({
                         render={({ field }) => (
                             <FormItem className="flex flex-col">
                                 <FormLabel>Employee {index + 1}</FormLabel>
-                                <Popover
-                                    open={openPopover === `employees.${index}`}
-                                    onOpenChange={(isOpen) => setOpenPopover(isOpen ? `employees.${index}` : null)}
-                                >
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                className={cn(
-                                                    'w-[200px] justify-between',
-                                                    !field.value.label && 'text-muted-foreground'
-                                                )}
-                                            >
-                                                {field.value.label || 'Select employee'}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[200px] p-0">
-                                        <Command>
-                                            <CommandInput placeholder="Search employee..." />
-                                            <CommandEmpty>No employee found.</CommandEmpty>
-                                            <CommandList>
-                                                <CommandGroup>
-                                                    {availableEmployees.map((employee) => (
-                                                        <CommandItem
-                                                            value={employee.value}
-                                                            key={employee.value}
-                                                            onSelect={() => {
-                                                                form.setValue(`employees.${index}`, employee);
-                                                                setOpenPopover(null);
-                                                            }}
-                                                        >
-                                                            <Check
-                                                                className={cn(
-                                                                    'mr-2 h-4 w-4',
-                                                                    employee.value === field.value.value
-                                                                        ? 'opacity-100'
-                                                                        : 'opacity-0'
-                                                                )}
-                                                            />
-                                                            {employee.label}
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
+                                <div className="flex">
+                                    <Popover
+                                        open={openPopover === `employees.${index}`}
+                                        onOpenChange={(isOpen) => setOpenPopover(isOpen ? `employees.${index}` : null)}
+                                    >
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    className={cn(
+                                                        'w-[200px] justify-between',
+                                                        !field.value.label && 'text-muted-foreground'
+                                                    )}
+                                                >
+                                                    {field.value.label || 'Select employee'}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[200px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search employee..." />
+                                                <CommandEmpty>No employee found.</CommandEmpty>
+                                                <CommandList>
+                                                    <CommandGroup>
+                                                        {availableEmployees.map((employee) => (
+                                                            <CommandItem
+                                                                value={employee.value}
+                                                                key={employee.value}
+                                                                onSelect={() => {
+                                                                    form.setValue(`employees.${index}`, employee);
+                                                                    setOpenPopover(null);
+                                                                }}
+                                                            >
+                                                                <Check
+                                                                    className={cn(
+                                                                        'mr-2 h-4 w-4',
+                                                                        employee.value === field.value.value
+                                                                            ? 'opacity-100'
+                                                                            : 'opacity-0'
+                                                                    )}
+                                                                />
+                                                                {employee.label}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            remove(index);
+                                        }}
+                                        aria-label={`Remove employee ${field.value.label || index + 1}`}
+                                        className='text-red-600 hover:text-red-700'
+                                    >
+                                        <UserRoundMinus />
+                                    </Button>
+                                </div>
+
                                 <FormDescription>Select an employee for this shift.</FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -288,6 +273,8 @@ const AddShiftForm = ({
                             });
                         }}
                     >
+                        {' '}
+                        <UserRoundPlus />
                         Add Employee
                     </Button>
 
