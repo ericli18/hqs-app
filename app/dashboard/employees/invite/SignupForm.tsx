@@ -28,10 +28,17 @@ export const SignupForm = () => {
         const res = await createEmployee(data);
         console.log(res);
         if (res.message == 'success') {
-            toast({ title: 'Success' });
+            toast({
+                title: 'Success',
+                description: `Invited ${data.firstName} ${data.lastName}. \n Please have them check their emails for the invite link`,
+            });
             form.reset();
         } else {
-            toast({ variant: 'destructive', title: 'Something went wrong' });
+            toast({
+                variant: 'destructive',
+                title: 'Failed to invite employee',
+                description: 'Could it be the HQS ID is already in use?',
+            });
         }
     };
 
