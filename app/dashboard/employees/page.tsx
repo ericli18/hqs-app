@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { Employee } from './columns';
 import { EmployeeDataTable } from './datatable';
 import { selectAllEmployees } from '@/lib/data';
+import { InviteButton } from './invite/invite-button';
 export default async function Page() {
     const supabase = createClient();
 
@@ -14,7 +15,8 @@ export default async function Page() {
     return (
         <div>
             <h1>Team</h1>
-            <p>Invite new memebers in your team</p>
+            <p>Invite new members in your team</p>
+            <InviteButton />
             <EmployeeDataTable data={employees} />
         </div>
     );
