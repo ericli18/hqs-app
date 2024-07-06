@@ -26,20 +26,18 @@ export const SignupForm = () => {
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         const res = await createEmployee(data);
-        console.log(res)
+        console.log(res);
         if (res.message == 'success') {
             toast({ title: 'Success' });
+            form.reset();
         } else {
-            toast({ title: 'Something went wrong' });
+            toast({ variant: 'destructive', title: 'Something went wrong' });
         }
     };
 
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                     control={form.control}
                     name="email"
@@ -49,7 +47,6 @@ export const SignupForm = () => {
                             <FormControl>
                                 <Input placeholder="" {...field} />
                             </FormControl>
-                            <FormDescription>Email adress</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -64,7 +61,6 @@ export const SignupForm = () => {
                                 <FormControl>
                                     <Input placeholder="" {...field} />
                                 </FormControl>
-                                <FormDescription>First Name</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -78,7 +74,6 @@ export const SignupForm = () => {
                                 <FormControl>
                                     <Input placeholder="" {...field} />
                                 </FormControl>
-                                <FormDescription>Last Name</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -89,16 +84,16 @@ export const SignupForm = () => {
                     name="hqsId"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>HQS Id</FormLabel>
+                            <FormLabel>HQS ID</FormLabel>
                             <FormControl>
                                 <Input placeholder="" {...field} />
                             </FormControl>
-                            <FormDescription>HQS ID</FormDescription>
+                            <FormDescription>Should be in the format HQS####</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit">Invite</Button>
             </form>
         </Form>
     );
