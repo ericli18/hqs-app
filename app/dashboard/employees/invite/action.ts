@@ -25,6 +25,7 @@ export async function createEmployee(data: z.infer<typeof formSchema>) {
             }
         );
         const { data, error } = await supabase.auth.admin.inviteUserByEmail(parsed.data.email, {
+            redirectTo: 'localhost:3000/reset-password',
             data: {
                 first_name: parsed.data.firstName,
                 last_name: parsed.data.lastName,

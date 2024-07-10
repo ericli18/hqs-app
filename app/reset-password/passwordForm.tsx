@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { EyeOff, Eye } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { submit } from './action';
 
 const ResetForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -24,12 +25,8 @@ const ResetForm = () => {
     };
 
     async function onSubmit(data: z.infer<typeof schema>) {
-        try {
-            console.log('Submitted');
-            console.log(data);
-        } catch (error) {
-            console.error('Error in form submission:', error);
-        }
+        const res = await submit(data);
+        console.log(res);
     }
 
     return (
