@@ -37,7 +37,7 @@ export const SignupForm = () => {
             toast({
                 variant: 'destructive',
                 title: 'Failed to invite employee',
-                description: 'Could it be the HQS ID is already in use?',
+                description: `${res.issues?.reduce((prev, issue) => prev + ': ' + issue, '')}`,
             });
         }
     };

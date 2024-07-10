@@ -13,13 +13,12 @@ export const defaultColumns = [
     columnHelper.display({
         id: 'actions',
     }),
-    columnHelper.accessor('first_name', {
+    columnHelper.accessor((employee) => `${employee.first_name} ${employee.last_name}`, {
+        header: 'Name',
         cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor('last_name', {
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor('location', {
+    columnHelper.accessor('hqs_id', {
+        header: 'HQS ID',
         cell: (info) => info.getValue(),
     }),
 ];
