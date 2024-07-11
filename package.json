@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "turbo": "next dev --turbo"
   },
   "dependencies": {
     "@aws-sdk/client-rds-data": "^3.514.0",
