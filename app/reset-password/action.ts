@@ -12,7 +12,7 @@ export const submit = async (values: z.infer<typeof schema>) => {
             return {
                 success: false,
                 message: 'Failed to update user',
-                data: error,
+                data: error.message,
             };
         } else {
             return {

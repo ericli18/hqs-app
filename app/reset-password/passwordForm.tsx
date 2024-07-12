@@ -6,12 +6,17 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { EyeOff, Eye } from 'lucide-react';
+import { EyeOff, Eye, Loader2 } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation'
 import { submit } from './action';
 
 const ResetForm = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const { toast } = useToast();
+    const router = useRouter();
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -25,13 +30,26 @@ const ResetForm = () => {
     };
 
     async function onSubmit(data: z.infer<typeof schema>) {
+        setButtonDisabled(true);
         const res = await submit(data);
-        console.log(res);
+        setButtonDisabled(false);
+        if(!res.success)
+        {
+            toast({
+                title: res.message,
+                description: res.data as string,
+                variant: "destructive"
+            })
+        }
+        else
+        {
+            router.push('/dashboard');
+        }
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-w-[20rem] flex-col gap-4">
                 <FormField
                     control={form.control}
                     name="password"
@@ -84,7 +102,13 @@ const ResetForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Change Password</Button>
+                {buttonDisabled ? (
+                    <Button disabled>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait
+                    </Button>
+                ) : (
+                    <Button type="submit">Change Password</Button>
+                )}
             </form>
         </Form>
     );
