@@ -5,9 +5,7 @@ import { type InferSelectModel } from 'drizzle-orm';
 import { employees } from '@/drizzle/schema';
 
 type SelectEmployee = InferSelectModel<typeof employees>;
-export type Employee = Omit<SelectEmployee, 'location'> & {
-    location: string;
-};
+export type Employee = SelectEmployee;
 const columnHelper = createColumnHelper<Employee>();
 export const defaultColumns = [
     columnHelper.display({

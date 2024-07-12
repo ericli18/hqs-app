@@ -64,17 +64,7 @@ export const getClockTimes = async (): Promise<Clock[]> => {
 };
 
 export const selectAllEmployees = async (): Promise<Employee[]> => {
-    const selectedEmployees = await db
-        .select({
-            id: employees.id,
-            first_name: employees.first_name,
-            last_name: employees.last_name,
-            hqs_id: employees.hqs_id,
-            location: locations.name,
-            role: employees.role,
-        })
-        .from(employees)
-        .innerJoin(locations, eq(employees.location, locations.location_id));
+    const selectedEmployees = await db.select().from(employees);
     return selectedEmployees;
 };
 
