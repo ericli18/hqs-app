@@ -52,7 +52,7 @@ export const SignupForm = () => {
                         <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} />
+                                <Input autoComplete="off" placeholder="" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -66,7 +66,7 @@ export const SignupForm = () => {
                             <FormItem className="flex-grow">
                                 <FormLabel>First Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="" {...field} />
+                                    <Input autoComplete="off" placeholder="" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -79,7 +79,7 @@ export const SignupForm = () => {
                             <FormItem className="flex-grow">
                                 <FormLabel>Last Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="" {...field} />
+                                    <Input autoComplete="off" placeholder="" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -93,7 +93,7 @@ export const SignupForm = () => {
                         <FormItem>
                             <FormLabel>HQS ID</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} />
+                                <Input autoComplete="off" placeholder="" {...field} />
                             </FormControl>
                             <FormDescription>Should be in the format HQS####</FormDescription>
                             <FormMessage />
