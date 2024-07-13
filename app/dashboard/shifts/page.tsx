@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
-import { selectProfile } from '@/lib/data';
+import { getLocations, selectProfile } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddShiftForm from './AddShiftForm';
 import { db } from '@/drizzle/db';
-import { employees, locations } from '@/drizzle/schema';
+import { employees } from '@/drizzle/schema';
 import { getShifts } from '@/lib/data';
 import { SelfShifTable } from './tables/selfShiftTable';
 
@@ -20,11 +20,7 @@ export default async function Page() {
         label: emp.first_name + ' ' + emp.last_name,
         value: emp.id,
     }));
-    const selectLocations = await db.select().from(locations);
-    const locs = selectLocations.map((loc) => ({
-        label: loc.name,
-        value: loc.location_id,
-    }));
+    const locs = await getLocations();
     const shifts = await getShifts(user.employees.id);
 
     return (
