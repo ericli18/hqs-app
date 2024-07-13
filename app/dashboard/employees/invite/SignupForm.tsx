@@ -3,6 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Check, ChevronsUpDown } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+
 import { createEmployee } from './action';
 
 import { useForm } from 'react-hook-form';
@@ -11,8 +18,14 @@ import { formSchema } from './schema';
 import { z } from 'zod';
 import { useToast } from '@/components/ui/use-toast';
 
-export const SignupForm = () => {
-    console.log('rerender');
+export const SignupForm = ({
+    defaultLocation,
+    locations,
+}: {
+    defaultLocation: number;
+    locations: { label: string; value: number }[];
+}) => {
+    const [locationOpen, setLocationOpen] = useState(false);
     const { toast } = useToast();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -21,6 +34,7 @@ export const SignupForm = () => {
             lastName: '',
             email: '',
             hqsId: '',
+            location: defaultLocation,
         },
     });
 
@@ -100,6 +114,70 @@ export const SignupForm = () => {
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Location</FormLabel>
+                            <Popover open={locationOpen} onOpenChange={(isOpen) => setLocationOpen(isOpen)}>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            className={cn(
+                                                'w-[200px] justify-between',
+                                                !field.value && 'text-muted-foreground'
+                                            )}
+                                        >
+                                            {field.value
+                                                ? locations.find((location) => location.value === field.value)?.label
+                                                : 'Select location'}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Search location..." />
+                                        <CommandEmpty>No location found.</CommandEmpty>
+                                        <CommandList>
+                                            <CommandGroup>
+                                                {locations &&
+                                                    locations.map((location) => (
+                                                        <CommandItem
+                                                            value={location.label}
+                                                            key={location.value}
+                                                            onSelect={() => {
+                                                                form.setValue('location', location.value);
+                                                                setLocationOpen(false);
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    'mr-2 h-4 w-4',
+                                                                    location.value === field.value
+                                                                        ? 'opacity-100'
+                                                                        : 'opacity-0'
+                                                                )}
+                                                            />
+                                                            {location.label}
+                                                        </CommandItem>
+                                                    ))}
+                                            </CommandGroup>
+                                        </CommandList>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                            <FormDescription>
+                                Default location for this employee, but can be changed per shift
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
                 <Button type="submit">Invite</Button>
             </form>
         </Form>

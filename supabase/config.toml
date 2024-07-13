@@ -163,3 +163,7 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 [auth.email.template.invite]
 subject = "You are invited to HQS Automotive"
 content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.magic_link]
+subject = "You are invited to HQS Automotive"
+content_path = "./supabase/templates/invite.html"

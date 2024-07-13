@@ -2,27 +2,46 @@ import { db } from '@/drizzle/db';
 import { employees, clocks, locations, clock_types, roles, shift_assignments, shifts } from '@/drizzle/schema';
 import { createClient } from '@/utils/supabase/server';
 import { desc, eq, getTableColumns, or } from 'drizzle-orm';
-import { type Employee } from '@/app/dashboard/employees/columns';
+import { type Employee } from '@/app/dashboard/employees/table/columns';
 import { type Clock } from '@/app/dashboard/clocks/tables/selfClockColumns';
 import { alias } from 'drizzle-orm/pg-core';
 
 export const selectProfile = async () => {
     const supabase = createClient();
-    const {
-        error,
-        data: { user },
-    } = await supabase.auth.getUser();
-    const id = user?.id;
-    if (error || !id) {
+    try {
+        const {
+            data: { user },
+            error,
+        } = await supabase.auth.getUser();
+
+        if (error || !user?.id) {
+            console.error('Authentication error:', error);
+            return null;
+        }
+
+        const self = await db
+            .select()
+            .from(employees)
+            .leftJoin(roles, eq(employees.role, roles.role_id))
+            .where(eq(employees.id, user.id))
+            .limit(1)
+            .execute();
+
+        return self[0] || null;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
         return null;
     }
+};
 
-    const self = await db
-        .select()
-        .from(employees)
-        .leftJoin(roles, eq(employees.role, roles.role_id))
-        .where(eq(employees.id, id));
-    return self[0];
+export const getLocations = async () => {
+    const selectLocations = await db
+        .select({
+            label: locations.name,
+            value: locations.location_id,
+        })
+        .from(locations);
+    return selectLocations;
 };
 
 export const getClockTimes = async (): Promise<Clock[]> => {
@@ -74,7 +93,7 @@ export const getShifts = async (id: string) => {
             location: locations.name,
             start_time: shifts.start_time,
             end_time: shifts.end_time,
-            employee_id: employees.id
+            employee_id: employees.id,
         })
 
         .from(shift_assignments)

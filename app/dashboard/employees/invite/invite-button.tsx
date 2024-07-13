@@ -9,8 +9,10 @@ import {
 } from '@/components/ui/dialog';
 import { UserPlus } from 'lucide-react';
 import { SignupForm } from './SignupForm';
+import { getLocations } from '@/lib/data';
 
-export function InviteButton() {
+export async function InviteButton({defaultLocation}: {defaultLocation: number}) {
+    const locations = await getLocations();
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -26,7 +28,7 @@ export function InviteButton() {
                         Enter employee information here. Click invite when you are done.
                     </DialogDescription>
                 </DialogHeader>
-                <SignupForm />
+                <SignupForm defaultLocation={defaultLocation} locations={locations} />
             </DialogContent>
         </Dialog>
     );
