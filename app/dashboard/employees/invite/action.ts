@@ -30,6 +30,7 @@ export async function createEmployee(data: z.infer<typeof formSchema>) {
                 first_name: parsed.data.firstName,
                 last_name: parsed.data.lastName,
                 hqs_id: parsed.data.hqsId,
+                location: parsed.data.location,
             },
         });
         console.log(data);

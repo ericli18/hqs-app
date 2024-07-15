@@ -51,3 +51,17 @@ export const shift_assignments = pgTable('shift_assignments', {
     shift_id: bigint('shift_id', { mode: 'bigint' }).references(() => shifts.shift_id),
     employee_id: uuid('employee_id').references(() => employees.id),
 });
+    
+// Have to be filled in the database
+    
+export const ROLE = {
+    ADMIN: "admin",
+    SUPERVISOR: "supervisor",
+    EMPLOYEE: "employee",
+}
+
+export const ROLE_PERMISSIONS = {
+    ADMIN: [ROLE.ADMIN, ROLE.SUPERVISOR, ROLE.EMPLOYEE],
+    SUPERVISOR: [ROLE.SUPERVISOR, ROLE.EMPLOYEE],
+    EMPLOYEE: [],
+}
