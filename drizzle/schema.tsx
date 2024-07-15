@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, smallint, smallserial, timestamp, bigserial, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, text, uuid, smallint, smallserial, timestamp, bigserial, bigint, varchar } from 'drizzle-orm/pg-core';
 
 export const employees = pgTable('employees', {
     id: uuid('id').primaryKey(),
@@ -17,6 +17,7 @@ export const locations = pgTable('locations', {
     location_id: smallserial('location_id').primaryKey(),
     name: text('name').notNull(),
     created_at: timestamp('created_at'),
+    timezone: varchar('timezone').notNull(),
 });
 
 export const clocks = pgTable('clocks', {
@@ -41,8 +42,8 @@ export const roles = pgTable('roles', {
 
 export const shifts = pgTable('shifts', {
     shift_id: bigserial('shift_id', { mode: 'bigint' }).primaryKey(),
-    start_time: timestamp('start_time').notNull(),
-    end_time: timestamp('end_time').notNull(),
+    start_time: timestamp('start_time', { mode: 'string', withTimezone: true }).notNull(),
+    end_time: timestamp('end_time', { mode: 'string', withTimezone: true }).notNull(),
     location: smallint('location').references(() => locations.location_id),
 });
 
@@ -51,17 +52,17 @@ export const shift_assignments = pgTable('shift_assignments', {
     shift_id: bigint('shift_id', { mode: 'bigint' }).references(() => shifts.shift_id),
     employee_id: uuid('employee_id').references(() => employees.id),
 });
-    
+
 // Have to be filled in the database
-    
+
 export const ROLE = {
-    ADMIN: "admin",
-    SUPERVISOR: "supervisor",
-    EMPLOYEE: "employee",
-}
+    ADMIN: 'admin',
+    SUPERVISOR: 'supervisor',
+    EMPLOYEE: 'employee',
+};
 
 export const ROLE_PERMISSIONS = {
     ADMIN: [ROLE.ADMIN, ROLE.SUPERVISOR, ROLE.EMPLOYEE],
     SUPERVISOR: [ROLE.SUPERVISOR, ROLE.EMPLOYEE],
     EMPLOYEE: [],
-}
+};

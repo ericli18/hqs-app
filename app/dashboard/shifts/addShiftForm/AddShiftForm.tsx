@@ -46,14 +46,16 @@ const AddShiftForm = ({
     const [openPopover, setOpenPopover] = useState<string | null>(null);
     const { toast } = useToast();
     if (!employees) return <div>Loading...</div>;
+    
+    const tomorrow = dayjs().add(1, 'day');
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             employees: [],
-            startDate: '',
+            startDate: tomorrow.format('YYYY-MM-DD'),
             startTime: '',
-            endDate: '',
+            endDate: tomorrow.format('YYYY-MM-DD'),
             endTime: '',
             location: 0,
         },
@@ -150,7 +152,7 @@ const AddShiftForm = ({
                                     </Command>
                                 </PopoverContent>
                             </Popover>
-                            <FormDescription>This is the location that will be used for this shift</FormDescription>
+                            <FormDescription>Shift times will be relative to this location</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}

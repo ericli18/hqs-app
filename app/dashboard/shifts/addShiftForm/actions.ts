@@ -1,10 +1,14 @@
 'use server';
-
 import { formSchema } from './schema';
 import { z } from 'zod';
 import { db } from '@/drizzle/db';
-import { shifts, shift_assignments } from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
+import { shifts, shift_assignments, locations } from '@/drizzle/schema';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type shift = typeof shifts.$inferInsert;
 
@@ -25,18 +29,32 @@ export const submit = async (
             issues: parsed.error.issues.map((issue) => issue.message),
         };
     }
-
     try {
         const result = await db.transaction(async (tx) => {
-            const startDateTime = dayjs(parsed.data.startDate + ' ' + parsed.data.startTime).toDate();
-            const endDateTime = dayjs(parsed.data.endDate + ' ' + parsed.data.endTime).toDate();
+            const selectTimezone = await tx
+                .select()
+                .from(locations)
+                .where(eq(locations.location_id, parsed.data.location))
+                .limit(1);
+            const { timezone = 'UTC' } = selectTimezone[0] || {};
+            
+            const createDateTimeInTimezone = (date: string, time: string, tz: string) => {
+                return dayjs.tz(`${date} ${time}`, tz)
+            };
+
+            const startDateTime = createDateTimeInTimezone(parsed.data.startDate, parsed.data.startTime, timezone);
+            const endDateTime = createDateTimeInTimezone(parsed.data.endDate, parsed.data.endTime, timezone);
+
+            console.log('Timezone:', timezone);
+            console.log('Start DateTime:', startDateTime.format());
+            console.log('End DateTime:', endDateTime.format());
 
             const [insertedShift] = await tx
                 .insert(shifts)
                 .values({
                     location: parsed.data.location,
-                    start_time: startDateTime,
-                    end_time: endDateTime,
+                    start_time: startDateTime.format(),
+                    end_time: endDateTime.format(),
                 })
                 .returning();
 
@@ -44,12 +62,9 @@ export const submit = async (
                 shift_id: insertedShift.shift_id,
                 employee_id: employee.value,
             }));
-
             await tx.insert(shift_assignments).values(shiftAssignments);
-
             return insertedShift;
         });
-
         return {
             success: true,
             message: 'Shift created successfully',

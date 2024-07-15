@@ -1,7 +1,11 @@
 'use client';
-
 import { createColumnHelper } from '@tanstack/react-table';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export type Shift = {
     location: string,
@@ -11,6 +15,10 @@ export type Shift = {
 }
 
 const columnHelper = createColumnHelper<Shift>();
+
+const formatLocalTime = (date: Date) => {
+    return dayjs(date).local().format('ddd MM/DD/YY - hh:mm A');
+};
 
 export const defaultColumns = [
     columnHelper.display({
@@ -22,11 +30,10 @@ export const defaultColumns = [
     }),
     columnHelper.accessor('start_time', {
         header: 'Start',
-        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
+        cell: (info) => formatLocalTime(info.getValue()),
     }),
     columnHelper.accessor('end_time', {
         header: 'End',
-        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
+        cell: (info) => formatLocalTime(info.getValue()),
     })
-
 ];
