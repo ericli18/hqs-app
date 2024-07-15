@@ -4,8 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddShiftForm from './AddShiftForm';
 import { db } from '@/drizzle/db';
 import { employees } from '@/drizzle/schema';
-import { getShifts } from '@/lib/data';
-import { SelfShifTable } from './tables/selfShiftTable';
+import { ShiftTable } from './tables/ShiftTable';
 
 export default async function Page() {
     const user = await selectProfile();
@@ -21,7 +20,6 @@ export default async function Page() {
         value: emp.id,
     }));
     const locs = await getLocations();
-    const shifts = await getShifts(user.employees.id);
 
     return (
         <Tabs defaultValue="shifts" className="w-full">
@@ -30,7 +28,7 @@ export default async function Page() {
                 <TabsTrigger value="modify">Trade shifts</TabsTrigger>
                 {role && <TabsTrigger value="assign">Assign shifts</TabsTrigger>}
             </TabsList>
-            <TabsContent value="shifts">{<SelfShifTable data={shifts} />}</TabsContent>
+            <TabsContent value="shifts">{<ShiftTable userId={user.employees.id} />}</TabsContent>
             <TabsContent value="modify"></TabsContent>
             {role && (
                 <TabsContent value="assign">
