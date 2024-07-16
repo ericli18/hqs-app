@@ -319,6 +319,7 @@ const AddShiftForm = ({
                 </div>
             </form>
         </Form>
+                            disabled={fields.length === employees.length}
     );
 };
 
