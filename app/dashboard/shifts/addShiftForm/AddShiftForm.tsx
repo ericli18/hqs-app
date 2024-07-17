@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus } from 'lucide-react';
+import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus, Loader2} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -45,6 +45,7 @@ const AddShiftForm = ({
     locations: { label: string; value: number }[];
 }) => {
     const [openPopover, setOpenPopover] = useState<string | null>(null);
+    const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
     const { toast } = useToast();
     if (!employees) return <div>Loading...</div>;
 
@@ -66,12 +67,10 @@ const AddShiftForm = ({
     const { label: locationName }: { label?: string; value?: number } =
         locations.find((location) => location.value === watchLocation) || {};
 
-    console.log(locationName);
     let shiftsForLocation: Array<{ startTime: string; endTime: string }> = [];
 
     if (locationName && locationName in timeTemplate) {
         shiftsForLocation = timeTemplate[locationName];
-        console.log(`Shifts for ${locationName}:`, shiftsForLocation);
     } else {
         console.log('No shifts found for the selected location');
     }
@@ -90,6 +89,7 @@ const AddShiftForm = ({
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const res = await submit(values);
+        setSubmitDisabled(true);
         if (res.success) {
             toast({
                 title: res.message,
@@ -103,10 +103,11 @@ const AddShiftForm = ({
             });
             console.log(res.error || res.issues);
         }
+        setSubmitDisabled(false);
     }
 
     return (
-        <div className="flex">
+        <div className="flex flex-wrap gap-5">
             <Form {...form}>
                 <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
@@ -329,17 +330,23 @@ const AddShiftForm = ({
                             <UserRoundPlus />
                             Add Employee
                         </Button>
-                        <Button type="submit">Submit</Button>
+                        {submitDisabled ? (
+                            <Button disabled>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait
+                            </Button>
+                        ) : (
+                            <Button type="submit">Create shift</Button>
+                        )}
                     </div>
                 </form>
             </Form>
             <ul>
-                <h2>Use a template to fill in the time</h2>
+                <h2 className="text-lg">Use a template to fill in the time</h2>
                 {shiftsForLocation.map((template) => {
                     const startDate = dayjs('1970-01-01T' + template.startTime);
                     const endDate = dayjs('1970-01-01T' + template.endTime);
                     return (
-                        <li className="flex items-center gap-4">
+                        <li className="mt-4 grid grid-cols-2 items-center gap-4 text-sm">
                             <p>
                                 {dayjs(startDate).format('hh:mm A')} - {dayjs(endDate).format('hh:mm A')}
                             </p>
@@ -348,6 +355,7 @@ const AddShiftForm = ({
                                     form.setValue('startTime', template.startTime);
                                     form.setValue('endTime', template.endTime);
                                 }}
+                                variant="outline"
                             >
                                 Use this template
                             </Button>
