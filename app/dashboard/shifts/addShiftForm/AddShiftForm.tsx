@@ -107,7 +107,7 @@ const AddShiftForm = ({
     }
 
     return (
-        <div className="flex flex-wrap gap-5">
+        <div className="grid grid-cols-2 gap-6">
             <Form {...form}>
                 <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
