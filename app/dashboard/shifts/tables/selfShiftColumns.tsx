@@ -9,14 +9,14 @@ dayjs.extend(timezone);
 
 export type Shift = {
     location: string,
-    start_time: Date,
-    end_time: Date,
+    start_time: string,
+    end_time: string,
     employee_id: string
 }
 
 const columnHelper = createColumnHelper<Shift>();
 
-const formatLocalTime = (date: Date) => {
+const formatLocalTime = (date: string) => {
     return dayjs(date).local().format('ddd MM/DD/YY - hh:mm A');
 };
 
