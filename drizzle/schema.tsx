@@ -1,4 +1,18 @@
-import { pgTable, text, uuid, smallint, smallserial, timestamp, bigserial, bigint, varchar } from 'drizzle-orm/pg-core';
+import {
+    pgTable,
+    text,
+    uuid,
+    smallint,
+    smallserial,
+    timestamp,
+    bigserial,
+    bigint,
+    varchar,
+    integer,
+    date,
+    boolean,
+} from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const employees = pgTable('employees', {
     id: uuid('id').primaryKey(),
@@ -51,6 +65,20 @@ export const shift_assignments = pgTable('shift_assignments', {
     assignment_id: bigserial('assignment_id', { mode: 'bigint' }).primaryKey(),
     shift_id: bigint('shift_id', { mode: 'bigint' }).references(() => shifts.shift_id),
     employee_id: uuid('employee_id').references(() => employees.id),
+});
+
+export const employeeAvailabilities = pgTable('employee_availabilities', {
+    employeeAvailabilityId: integer('employee_availability_id').primaryKey(),
+    description: text('description').notNull(),
+    startDate: date('start_date').notNull(),
+    endDate: date('end_date').notNull(),
+    isFullDayEvent: boolean('is_full_day_event').notNull(),
+    startTime: timestamp('start_time', { withTimezone: true }),
+    endTime: timestamp('end_time', { withTimezone: true }),
+    rrule: text('rrule').notNull(),
+    employeeId: uuid('id')
+        .notNull()
+        .references(() => employees.id, { onDelete: 'cascade' }),
 });
 
 // Have to be filled in the database
