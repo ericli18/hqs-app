@@ -88,8 +88,8 @@ const AddShiftForm = ({
     }, [form.getValues('employees'), employees]);
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const res = await submit(values);
         setSubmitDisabled(true);
+        const res = await submit(values);
         if (res.success) {
             toast({
                 title: res.message,
