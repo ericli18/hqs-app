@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getLocations, selectProfile } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddShiftForm from './addShiftForm/AddShiftForm';
+import AvailabilityForm from './availabilityForm/AvailabilityForm';
 import { db } from '@/drizzle/db';
 import { employees } from '@/drizzle/schema';
 import { ShiftTable } from './tables/ShiftTable';
@@ -36,7 +37,7 @@ export default async function Page() {
 
             <TabsContent value="shifts">{<ShiftTable userId={user.employees.id} />}</TabsContent>
 
-            <TabsContent value="request">{/* Set Availability content goes here */}</TabsContent>
+            <TabsContent value="request">{<AvailabilityForm />}</TabsContent>
 
             <TabsContent value="trade">{/* Trade shifts content goes here */}</TabsContent>
 

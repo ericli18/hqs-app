@@ -12,7 +12,6 @@ import {
     date,
     boolean,
 } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
 
 export const employees = pgTable('employees', {
     id: uuid('id').primaryKey(),

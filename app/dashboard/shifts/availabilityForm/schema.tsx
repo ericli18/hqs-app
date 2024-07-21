@@ -15,7 +15,7 @@ export const formSchema = z
             message: 'Invalid end time format. Use HH:mm (24-hour format).',
         }),
 
-        reason: z.string(),
+        reason: z.string().length(1, 'Reason must be provided'),
     })
     .refine(
         (values) => {
