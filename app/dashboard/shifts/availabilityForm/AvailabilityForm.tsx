@@ -26,8 +26,8 @@ export default function AvailabilityForm() {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-2xl'>
+                <div className="grid grid-cols-2 gap-8">
                     <FormField
                         control={form.control}
                         name="startDate"
@@ -57,7 +57,7 @@ export default function AvailabilityForm() {
                         )}
                     />
                 </div>
-                <div className="flex gap-8">
+                <div className="grid grid-cols-2 gap-8">
                     <FormField
                         control={form.control}
                         name="endDate"
@@ -101,7 +101,7 @@ export default function AvailabilityForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button className="mt-8" type="submit">Submit</Button>
             </form>
         </Form>
     );

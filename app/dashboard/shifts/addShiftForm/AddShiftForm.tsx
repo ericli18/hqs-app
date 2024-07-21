@@ -175,7 +175,7 @@ const AddShiftForm = ({
                             </FormItem>
                         )}
                     />
-                    <div className="flex gap-8">
+                    <div className="grid grid-cols-2 gap-8">
                         <FormField
                             control={form.control}
                             name="startDate"
@@ -205,7 +205,7 @@ const AddShiftForm = ({
                             )}
                         />
                     </div>
-                    <div className="flex gap-8">
+                    <div className="grid grid-cols-2 gap-8">
                         <FormField
                             control={form.control}
                             name="endDate"
