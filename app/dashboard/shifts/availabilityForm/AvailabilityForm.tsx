@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 export default function AvailabilityForm() {
     const form = useForm<z.infer<typeof formSchema>>({
@@ -19,9 +20,13 @@ export default function AvailabilityForm() {
         },
     });
 
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        console.log(values);
+    };
+
     return (
         <Form {...form}>
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex gap-8">
                     <FormField
                         control={form.control}
@@ -96,6 +101,7 @@ export default function AvailabilityForm() {
                         </FormItem>
                     )}
                 />
+                <Button type="submit">Submit</Button>
             </form>
         </Form>
     );
