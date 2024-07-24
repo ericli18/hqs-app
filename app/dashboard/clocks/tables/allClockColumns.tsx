@@ -3,7 +3,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { type InferSelectModel } from 'drizzle-orm';
 import { clocks } from '@/drizzle/schema';
-import dayjs from 'dayjs';
+import { fromTimezone, formatISOPrintable } from '@/lib/utils';
 
 type SelectClock = InferSelectModel<typeof clocks>;
 
@@ -38,7 +38,7 @@ export const defaultColumns = [
     columnHelper.accessor('clock_time', {
         header: 'Time',
         id: 'clock_time',
-        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
+        cell: (info) => formatISOPrintable(fromTimezone(info.getValue())),
     }),
     columnHelper.accessor('clock_type', {
         header: 'Type',

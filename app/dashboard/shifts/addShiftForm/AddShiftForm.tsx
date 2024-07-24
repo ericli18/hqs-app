@@ -346,7 +346,7 @@ const AddShiftForm = ({
                     const startDate = dayjs('1970-01-01T' + template.startTime);
                     const endDate = dayjs('1970-01-01T' + template.endTime);
                     return (
-                        <li className="mt-4 grid grid-cols-2 items-center gap-4 text-sm">
+                        <li className="mt-4 grid grid-cols-2 items-center gap-4 text-sm" key={startDate.format() + endDate.format()}>
                             <p>
                                 {dayjs(startDate).format('hh:mm A')} - {dayjs(endDate).format('hh:mm A')}
                             </p>

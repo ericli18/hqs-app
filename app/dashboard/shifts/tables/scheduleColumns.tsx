@@ -1,12 +1,12 @@
 'use client';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import dayjs from 'dayjs';
+import { formatISOPrintable, fromTimezone } from '@/lib/utils';
 
 export type Schedule = {
     location: string,
-    start_time: Date,
-    end_time: Date,
+    start_time: string,
+    end_time: string,
     employee_id: string
 }
 
@@ -22,11 +22,11 @@ export const defaultColumns = [
     }),
     columnHelper.accessor('start_time', {
         header: 'Start',
-        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
+        cell: (info) => formatISOPrintable(fromTimezone(info.getValue())),
     }),
     columnHelper.accessor('end_time', {
         header: 'End',
-        cell: (info) => dayjs(info.getValue()).format('ddd MM/DD/YY - hh:mm A'),
+        cell: (info) =>formatISOPrintable(fromTimezone(info.getValue())),
     })
 
 ];

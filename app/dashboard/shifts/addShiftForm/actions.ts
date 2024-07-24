@@ -4,11 +4,7 @@ import { z } from 'zod';
 import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
 import { shifts, shift_assignments, locations } from '@/drizzle/schema';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import { toTimezone } from '@/lib/utils';
 
 type shift = typeof shifts.$inferInsert;
 
@@ -38,23 +34,16 @@ export const submit = async (
                 .limit(1);
             const { timezone = 'UTC' } = selectTimezone[0] || {};
             
-            const createDateTimeInTimezone = (date: string, time: string, tz: string) => {
-                return dayjs.tz(`${date} ${time}`, tz)
-            };
 
-            const startDateTime = createDateTimeInTimezone(parsed.data.startDate, parsed.data.startTime, timezone);
-            const endDateTime = createDateTimeInTimezone(parsed.data.endDate, parsed.data.endTime, timezone);
-
-            console.log('Timezone:', timezone);
-            console.log('Start DateTime:', startDateTime.format());
-            console.log('End DateTime:', endDateTime.format());
+            const startDateTime = toTimezone(parsed.data.startTime, parsed.data.startDate,  timezone);
+            const endDateTime = toTimezone(parsed.data.endTime, parsed.data.endDate, timezone);
 
             const [insertedShift] = await tx
                 .insert(shifts)
                 .values({
                     location: parsed.data.location,
-                    start_time: startDateTime.format(),
-                    end_time: endDateTime.format(),
+                    start_time: startDateTime,
+                    end_time: endDateTime,
                 })
                 .returning();
 

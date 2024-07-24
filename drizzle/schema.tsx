@@ -13,6 +13,7 @@ import {
     boolean,
 } from 'drizzle-orm/pg-core';
 
+
 export const employees = pgTable('employees', {
     id: uuid('id').primaryKey(),
     first_name: text('first_name').notNull(),
@@ -35,7 +36,7 @@ export const locations = pgTable('locations', {
 
 export const clocks = pgTable('clocks', {
     clock_id: bigserial('clock_id', { mode: 'bigint' }).primaryKey(),
-    clock_time: timestamp('clock_time'),
+    clock_time: timestamp('clock_time', {mode: 'string', withTimezone: true}).notNull(),
     clock_type: smallint('clock_type'),
     employee_id: uuid('employee_id').references(() => employees.id),
     supervisor_id: uuid('supervisor_id').references(() => employees.id),
@@ -66,19 +67,22 @@ export const shift_assignments = pgTable('shift_assignments', {
     employee_id: uuid('employee_id').references(() => employees.id),
 });
 
-export const employeeAvailabilities = pgTable('employee_availabilities', {
-    employeeAvailabilityId: integer('employee_availability_id').primaryKey(),
-    description: text('description').notNull(),
-    startDate: date('start_date').notNull(),
-    endDate: date('end_date').notNull(),
-    isFullDayEvent: boolean('is_full_day_event').notNull(),
-    startTime: timestamp('start_time', { withTimezone: true }),
-    endTime: timestamp('end_time', { withTimezone: true }),
-    rrule: text('rrule').notNull(),
-    employeeId: uuid('id')
-        .notNull()
-        .references(() => employees.id, { onDelete: 'cascade' }),
-});
+export const employeeAvailabilities = pgTable(
+    'employee_availabilities',
+    {
+        employeeAvailabilityId: integer('employee_availability_id').primaryKey().generatedAlwaysAsIdentity(),
+        description: text('description').notNull(),
+        startDate: date('start_date', { mode: 'string' }).notNull(),
+        endDate: date('end_date', { mode: 'string' }).notNull(),
+        isFullDayEvent: boolean('is_full_day_event').notNull(),
+        startTime: timestamp('start_time', { mode: 'string', withTimezone: true }),
+        endTime: timestamp('end_time', { mode: 'string', withTimezone: true }),
+        rrule: text('rrule').notNull(),
+        employeeId: uuid('id')
+            .notNull()
+            .references(() => employees.id, { onDelete: 'cascade' }),
+    },
+);
 
 // Have to be filled in the database
 
