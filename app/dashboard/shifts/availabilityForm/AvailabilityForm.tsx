@@ -1,4 +1,7 @@
 'use client';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { submit } from './actions';
 import { formSchema } from './schema';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -7,8 +10,12 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function AvailabilityForm() {
+    const { toast } = useToast();
+    const [submitDisabled, setSubmitDisabled] = useState(false);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -16,73 +23,132 @@ export default function AvailabilityForm() {
             endDate: '',
             startTime: '',
             endTime: '',
+            isFullDayEvent: false,
             reason: '',
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        setSubmitDisabled(true);
+        console.log(data)
+        try {
+            const result = await submit(data);
+            if (result.success) {
+                toast({
+                    title: 'Availability Submitted',
+                    description: `Your availability from ${data.startDate} to ${data.endDate} has been recorded.`,
+                    duration: 5000,
+                });
+                form.reset();
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: 'Submission Failed',
+                    description: result.error || 'An unexpected error occurred. Please try again.',
+                    duration: 7000,
+                });
+            }
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'An unexpected error occurred. Please try again later.',
+                duration: 7000,
+            });
+        }
+        setSubmitDisabled(false);
+        form.reset();
     };
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='max-w-2xl'>
-                <div className="grid grid-cols-2 gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-2xl">
+                <div className="flex items-start gap-8">
+                    <div>
+                        <div className="grid grid-cols-2 gap-8">
+                            <FormField
+                                control={form.control}
+                                name="startDate"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Start Date</FormLabel>
+                                        <FormControl>
+                                            <Input type="date" {...field} />
+                                        </FormControl>
+                                        <FormDescription>First unavailable day</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="startTime"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Start Time</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="time"
+                                                {...field}
+                                                value={field.value ?? ''}
+                                                disabled={form.watch('isFullDayEvent')}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>First unavailable time</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-8">
+                            <FormField
+                                control={form.control}
+                                name="endDate"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>End Date</FormLabel>
+                                        <FormControl>
+                                            <Input type="date" {...field} />
+                                        </FormControl>
+                                        <FormDescription>End date</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="endTime"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>End Time</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="time"
+                                                {...field}
+                                                value={field.value ?? ''}
+                                                disabled={form.watch('isFullDayEvent')}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>Ending time</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </div>
                     <FormField
                         control={form.control}
-                        name="startDate"
+                        name="isFullDayEvent"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Start Date</FormLabel>
+                            <FormItem className="max-w-48 flex flex-row items-start space-x-3 space-y-0 self-center rounded-md border p-4">
                                 <FormControl>
-                                    <Input type="date" {...field} />
+                                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>
-                                <FormDescription>First unavailable day</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="startTime"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Start Time</FormLabel>
-                                <FormControl>
-                                    <Input type="time" {...field} />
-                                </FormControl>
-                                <FormDescription>First unavailable time</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                <div className="grid grid-cols-2 gap-8">
-                    <FormField
-                        control={form.control}
-                        name="endDate"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>End Date</FormLabel>
-                                <FormControl>
-                                    <Input type="date" {...field} />
-                                </FormControl>
-                                <FormDescription>End date</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="endTime"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>End Time</FormLabel>
-                                <FormControl>
-                                    <Input type="time" {...field} />
-                                </FormControl>
-                                <FormDescription>Ending date</FormDescription>
-                                <FormMessage />
+                                <div className="space-y-1 leading-none">
+                                    <FormLabel>Full day availability</FormLabel>
+                                    <FormDescription>Check to ask off for full days</FormDescription>
+                                    <FormMessage />
+                                </div>
                             </FormItem>
                         )}
                     />
@@ -101,7 +167,15 @@ export default function AvailabilityForm() {
                         </FormItem>
                     )}
                 />
-                <Button className="mt-8" type="submit">Submit</Button>
+                {submitDisabled ? (
+                    <Button className="mt-8" disabled>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please Wait
+                    </Button>
+                ) : (
+                    <Button type="submit" className="mt-8">
+                        Submit
+                    </Button>
+                )}
             </form>
         </Form>
     );
