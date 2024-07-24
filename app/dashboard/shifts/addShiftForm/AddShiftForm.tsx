@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus, Loader2} from 'lucide-react';
+import { Check, ChevronsUpDown, UserRoundMinus, UserRoundPlus, Loader2 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -19,29 +19,31 @@ import { useToast } from '@/components/ui/use-toast';
 import { submit } from './actions';
 import { formSchema } from './schema';
 import dayjs from 'dayjs';
-import { timeTemplate } from './templateTimes';
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { formatShiftTimeRange } from './utils';
+import Templates from './TemplateTimes';
 
-const formatShiftTimeRange = (start: Date | string | undefined, end: Date | string | undefined) => {
-    if (!start || !end) {
-        return '';
-    }
-    const startDate = dayjs(start);
-    const endDate = dayjs(end);
-
-    if (startDate.month() === endDate.month() && startDate.date() === endDate.date()) {
-        return `${startDate.format('MMMM D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
-    } else if (startDate.month() === endDate.month()) {
-        return `${startDate.format('MMMM D')} to ${endDate.format('D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
-    } else {
-        return `${startDate.format('MMMM D')} to ${endDate.format('MMMM D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
-    }
-};
+//TODO: refactor this huge thing
 
 const AddShiftForm = ({
     employees,
     locations,
 }: {
-    employees: { label: string; value: string }[];
+    employees: {
+        label: string;
+        value: string;
+        availability: {
+            startDate: string;
+            startTime: string | null;
+            endDate: string;
+            endTime: string | null;
+            description: string;
+            isFullDayEvent: boolean;
+            employeeAvailabilityId: number;
+            rrule: string;
+            employeeId: string;
+        }[];
+    }[];
     locations: { label: string; value: number }[];
 }) => {
     const [openPopover, setOpenPopover] = useState<string | null>(null);
@@ -50,7 +52,6 @@ const AddShiftForm = ({
     if (!employees) return <div>Loading...</div>;
 
     const tomorrow = dayjs().add(1, 'day');
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -62,18 +63,7 @@ const AddShiftForm = ({
             location: 0,
         },
     });
-
     const watchLocation = form.watch('location');
-    const { label: locationName }: { label?: string; value?: number } =
-        locations.find((location) => location.value === watchLocation) || {};
-
-    let shiftsForLocation: Array<{ startTime: string; endTime: string }> = [];
-
-    if (locationName && locationName in timeTemplate) {
-        shiftsForLocation = timeTemplate[locationName];
-    } else {
-        console.log('No shifts found for the selected location');
-    }
 
     const { fields, append, remove } = useFieldArray({
         name: 'employees',
@@ -340,29 +330,7 @@ const AddShiftForm = ({
                     </div>
                 </form>
             </Form>
-            <ul>
-                <h2 className="text-lg">Use a template to fill in the time</h2>
-                {shiftsForLocation.map((template) => {
-                    const startDate = dayjs('1970-01-01T' + template.startTime);
-                    const endDate = dayjs('1970-01-01T' + template.endTime);
-                    return (
-                        <li className="mt-4 grid grid-cols-2 items-center gap-4 text-sm" key={startDate.format() + endDate.format()}>
-                            <p>
-                                {dayjs(startDate).format('hh:mm A')} - {dayjs(endDate).format('hh:mm A')}
-                            </p>
-                            <Button
-                                onClick={() => {
-                                    form.setValue('startTime', template.startTime);
-                                    form.setValue('endTime', template.endTime);
-                                }}
-                                variant="outline"
-                            >
-                                Use this template
-                            </Button>
-                        </li>
-                    );
-                })}
-            </ul>
+            <Templates locations={locations} watchLocation={watchLocation} setValue={form.setValue} />
         </div>
     );
 };

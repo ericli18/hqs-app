@@ -10,7 +10,6 @@ import { toTimezone } from '@/lib/utils';
 
 type SubmitResult = { success: true; message: string; id: number | string } | { success: false; error: string };
 
-//TODO: To local and to shift time functions
 
 export const submit = async (values: z.infer<typeof formSchema>): Promise<SubmitResult> => {
     try {
@@ -28,7 +27,6 @@ export const submit = async (values: z.infer<typeof formSchema>): Promise<Submit
         }
 
         const { data } = parsed;
-        //TODO: Check if timezones could impact the start and end date
         const startDate = dayjs(data.startDate).format('YYYY-MM-DD');
         const endDate = dayjs(data.endDate).format('YYYY-MM-DD');
         const startTime = !data.isFullDayEvent ? toTimezone(data.startTime) : null;
