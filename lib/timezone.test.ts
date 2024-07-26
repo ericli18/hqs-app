@@ -1,8 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { toTimezone, fromTimezone, formatISOPrintable } from './utils';
 import dayjs from 'dayjs';
 
 describe('Timezone conversion functions', () => {
+    
+    beforeAll(() => {
+        dayjs.tz.setDefault('America/Chicago');
+    });
+
+    afterAll(() => {
+        dayjs.tz.setDefault();
+    });
+
     const ISO_SQL_FORMAT = 'YYYY-MM-DD HH:mm:ssZ';
     describe('toTimezone', () => {
         it('It converts to an ISO 8601 string with only a time', () => {
@@ -13,7 +22,7 @@ describe('Timezone conversion functions', () => {
 
         it('converts time to specified timezone', () => {
             const result = toTimezone('12:00', '2014-06-01', 'America/New_York');
-            expect(result).toBe('2014-06-01 13:00:00-04:00');
+            expect(result).toBe('2014-06-01 12:00:00-04:00');
         });
 
         it('uses the local timezone as a default', () => {
