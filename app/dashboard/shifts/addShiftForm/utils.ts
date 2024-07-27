@@ -37,8 +37,17 @@ export const isBusy = (
     shiftEndTime: string,
     timezone: string
 ) => {
+    if(shiftStartTime === "")
+    {
+        shiftStartTime = "00:00";
+    }
+    if(shiftEndTime === "")
+    {
+        shiftEndTime = "23:59"
+    }
     const shiftStart = toTimezone(shiftStartTime, shiftStartDate, timezone);
     const shiftEnd = toTimezone(shiftEndTime, shiftEndDate, timezone);
+    console.log(shiftStart, shiftEnd)
     const intersection = availabilities.find((availability) => {
         if (availability.isFullDayEvent) {
             const inStart = dayjs(shiftStart).isBetween(
@@ -55,19 +64,6 @@ export const isBusy = (
             );
             return inStart || inEnd;
         } else {
-            // [
-            //     {
-            //       employeeAvailabilityId: 1,
-            //       description: 'Test Availability',
-            //       startDate: '2023-07-01',
-            //       endDate: '2023-07-03',
-            //       isFullDayEvent: false,
-            //       startTime: '09:00',
-            //       endTime: '17:00',
-            //       rrule: '',
-            //       employeeId: '1'
-            //     }
-            //   ]
             assert(availability.startTime);
             assert(availability.endTime);
             const start = combineDateTime(availability.startDate, availability.startTime, timezone);
