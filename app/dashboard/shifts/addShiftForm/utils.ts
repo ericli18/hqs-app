@@ -47,7 +47,6 @@ export const isBusy = (
     }
     const shiftStart = toTimezone(shiftStartTime, shiftStartDate, timezone);
     const shiftEnd = toTimezone(shiftEndTime, shiftEndDate, timezone);
-    console.log(shiftStart, shiftEnd)
     const intersection = availabilities.find((availability) => {
         if (availability.isFullDayEvent) {
             const inStart = dayjs(shiftStart).isBetween(

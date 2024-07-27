@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -64,7 +64,7 @@ const AddShiftForm = ({
             location: 0,
         },
     });
-    const watchLocation = form.watch('location');
+    const [watchLocation] = form.watch(['location', 'employees']);
 
     const { fields, append, remove } = useFieldArray({
         name: 'employees',
@@ -72,14 +72,9 @@ const AddShiftForm = ({
     });
 
     const [availableEmployees, setAvailableEmployees] = useState(employees);
-    useEffect(() => {
-        const selectedEmployees = form.getValues('employees');
-        console.log(selectedEmployees)
-        const selectedValues = selectedEmployees.map((e) => e.value).filter(Boolean);
-        setAvailableEmployees(employees.filter((e) => !selectedValues.includes(e.value)));
-    }, [form.getValues('employees'), employees]);
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log('submit');
         setSubmitDisabled(true);
         const res = await submit(values);
         if (res.success) {
@@ -281,7 +276,6 @@ const AddShiftForm = ({
                                                                     (loc) => loc.value === locationNum
                                                                 );
                                                                 const timezone = x ? x.timezone : 'utc';
-                                                                console.log("x:", x)
                                                                 const shift = isBusy(
                                                                     employee.availability,
                                                                     startTime,
@@ -290,7 +284,6 @@ const AddShiftForm = ({
                                                                     endTime,
                                                                     timezone
                                                                 );
-                                                                console.log(shift)
                                                                 const message = shift
                                                                     ? `This employee can't work at this time`
                                                                     : '';
@@ -302,6 +295,20 @@ const AddShiftForm = ({
                                                                             form.setValue(
                                                                                 `employees.${index}`,
                                                                                 employee
+                                                                            );
+
+                                                                            const selectedEmployees =
+                                                                                form.getValues('employees');
+                                                                            const selectedValues = selectedEmployees
+                                                                                .map((e) => e.value)
+                                                                                .filter(Boolean);
+                                                                            setAvailableEmployees(
+                                                                                employees.filter(
+                                                                                    (e) =>
+                                                                                        !selectedValues.includes(
+                                                                                            e.value
+                                                                                        )
+                                                                                )
                                                                             );
                                                                             setOpenPopover(null);
                                                                         }}
@@ -333,6 +340,13 @@ const AddShiftForm = ({
                                             variant="ghost"
                                             onClick={() => {
                                                 remove(index);
+                                                const selectedEmployees = form.getValues('employees');
+                                                const selectedValues = selectedEmployees
+                                                    .map((e) => e.value)
+                                                    .filter(Boolean);
+                                                setAvailableEmployees(
+                                                    employees.filter((e) => !selectedValues.includes(e.value))
+                                                );
                                             }}
                                             aria-label={`Remove employee ${field.value.label || index + 1}`}
                                             className="text-red-600 hover:text-red-700"

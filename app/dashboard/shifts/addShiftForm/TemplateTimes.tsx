@@ -57,9 +57,7 @@ export default function Templates({
 
     if (locationName && locationName in timeTemplate) {
         shiftsForLocation = timeTemplate[locationName];
-    } else {
-        console.log('No shifts found for the selected location');
-    }
+    } 
     return (
         <ul>
             <h2 className="text-lg">Use a template to fill in the time</h2>

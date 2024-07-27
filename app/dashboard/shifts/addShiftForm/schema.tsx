@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+dayjs.extend(isSameOrBefore)
+
 const baseSchema = z.object({
     employees: z
         .array(
@@ -35,7 +38,7 @@ export const formSchema = baseSchema.refine(
     (values) => {
         const startDateTime = dayjs(values.startDate + ' ' + values.startTime, 'YYYY-MM-DD HH:mm');
         const endDateTime = dayjs(values.endDate + ' ' + values.endTime, 'YYYY-MM-DD HH:mm');
-        return startDateTime.isBefore(endDateTime);
+        return startDateTime.isSameOrBefore(endDateTime);
     },
     {
         message: 'End of the shift must be after the start of the shift',
