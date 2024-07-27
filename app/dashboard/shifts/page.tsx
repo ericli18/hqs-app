@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddShiftForm from './addShiftForm/AddShiftForm';
 import AvailabilityForm from './availabilityForm/AvailabilityForm';
 import { db } from '@/drizzle/db';
-import { employees } from '@/drizzle/schema';
 import { ShiftTable } from './tables/ShiftTable';
 
 export default async function Page() {
@@ -15,10 +14,15 @@ export default async function Page() {
 
     const role = user.roles?.name;
 
-    const selectEmployees = await db.select().from(employees);
+    const selectEmployees = await db.query.employees.findMany({
+        with: {
+            availabilities: true
+        }
+    })
     const emps = selectEmployees.map((emp) => ({
         label: emp.first_name + ' ' + emp.last_name,
         value: emp.id,
+        availability: emp.availabilities
     }));
     const locs = await getLocations();
 

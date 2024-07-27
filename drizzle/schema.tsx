@@ -12,7 +12,7 @@ import {
     date,
     boolean,
 } from 'drizzle-orm/pg-core';
-
+import { relations } from 'drizzle-orm';
 
 export const employees = pgTable('employees', {
     id: uuid('id').primaryKey(),
@@ -26,6 +26,11 @@ export const employees = pgTable('employees', {
         .references(() => roles.role_id)
         .notNull(),
 });
+
+export const employeeRelations = relations(employees, ({ many }) => ({
+    availabilities: many(employeeAvailabilities),
+  }));
+  
 
 export const locations = pgTable('locations', {
     location_id: smallserial('location_id').primaryKey(),
@@ -83,6 +88,11 @@ export const employeeAvailabilities = pgTable(
             .references(() => employees.id, { onDelete: 'cascade' }),
     },
 );
+
+export const availabilityRelations = relations(employeeAvailabilities, ({ one }) => ({
+    employee: one(employees, {fields: [employeeAvailabilities.employeeId], references: [employees.id]})
+}))
+
 
 // Have to be filled in the database
 

@@ -39,6 +39,7 @@ export const getLocations = async () => {
         .select({
             label: locations.name,
             value: locations.location_id,
+            timezone: locations.timezone
         })
         .from(locations);
     return selectLocations;

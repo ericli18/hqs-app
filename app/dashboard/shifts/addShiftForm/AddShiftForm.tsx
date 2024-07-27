@@ -19,9 +19,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { submit } from './actions';
 import { formSchema } from './schema';
 import dayjs from 'dayjs';
-// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { formatShiftTimeRange } from './utils';
+import { formatShiftTimeRange, isBusy } from './utils';
 import Templates from './TemplateTimes';
+import Hover from './Hover';
 
 //TODO: refactor this huge thing
 
@@ -44,10 +44,11 @@ const AddShiftForm = ({
             employeeId: string;
         }[];
     }[];
-    locations: { label: string; value: number }[];
+    locations: { label: string; value: number; timezone: string }[];
 }) => {
     const [openPopover, setOpenPopover] = useState<string | null>(null);
     const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
+
     const { toast } = useToast();
     if (!employees) return <div>Loading...</div>;
 
@@ -73,6 +74,7 @@ const AddShiftForm = ({
     const [availableEmployees, setAvailableEmployees] = useState(employees);
     useEffect(() => {
         const selectedEmployees = form.getValues('employees');
+        console.log(selectedEmployees)
         const selectedValues = selectedEmployees.map((e) => e.value).filter(Boolean);
         setAvailableEmployees(employees.filter((e) => !selectedValues.includes(e.value)));
     }, [form.getValues('employees'), employees]);
@@ -261,26 +263,66 @@ const AddShiftForm = ({
                                                     <CommandEmpty>No employee found.</CommandEmpty>
                                                     <CommandList>
                                                         <CommandGroup>
-                                                            {availableEmployees.map((employee) => (
-                                                                <CommandItem
-                                                                    value={employee.value}
-                                                                    key={employee.value}
-                                                                    onSelect={() => {
-                                                                        form.setValue(`employees.${index}`, employee);
-                                                                        setOpenPopover(null);
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            'mr-2 h-4 w-4',
-                                                                            employee.value === field.value.value
-                                                                                ? 'opacity-100'
-                                                                                : 'opacity-0'
-                                                                        )}
-                                                                    />
-                                                                    {employee.label}
-                                                                </CommandItem>
-                                                            ))}
+                                                            {availableEmployees.map((employee) => {
+                                                                const [
+                                                                    startDate,
+                                                                    endDate,
+                                                                    startTime,
+                                                                    endTime,
+                                                                    locationNum,
+                                                                ] = form.getValues([
+                                                                    'startDate',
+                                                                    'endDate',
+                                                                    'startTime',
+                                                                    'endTime',
+                                                                    'location',
+                                                                ]);
+                                                                const x = locations.find(
+                                                                    (loc) => loc.value === locationNum
+                                                                );
+                                                                const timezone = x ? x.timezone : 'utc';
+                                                                console.log("x:", x)
+                                                                const shift = isBusy(
+                                                                    employee.availability,
+                                                                    startTime,
+                                                                    startDate,
+                                                                    endDate,
+                                                                    endTime,
+                                                                    timezone
+                                                                );
+                                                                console.log(shift)
+                                                                const message = shift
+                                                                    ? `This employee can't work at this time`
+                                                                    : '';
+                                                                return (
+                                                                    <CommandItem
+                                                                        value={employee.label}
+                                                                        key={employee.value}
+                                                                        onSelect={() => {
+                                                                            form.setValue(
+                                                                                `employees.${index}`,
+                                                                                employee
+                                                                            );
+                                                                            setOpenPopover(null);
+                                                                        }}
+                                                                        // className={cn(
+                                                                        //     'flex',
+                                                                        //     shift ? 'bg-red-200' : ''
+                                                                        // )}
+                                                                    >
+                                                                        <Check
+                                                                            className={cn(
+                                                                                'mr-2 h-4 w-4',
+                                                                                employee.value === field.value.value
+                                                                                    ? 'opacity-100'
+                                                                                    : 'opacity-0'
+                                                                            )}
+                                                                        />
+                                                                        {employee.label}
+                                                                        {shift && <Hover content={message} />}
+                                                                    </CommandItem>
+                                                                );
+                                                            })}
                                                         </CommandGroup>
                                                     </CommandList>
                                                 </Command>
