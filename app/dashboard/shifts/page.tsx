@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { getLocations, selectProfile } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AddShiftForm from './addShiftForm/AddShiftForm';
-import AvailabilityForm from './availabilityForm/AvailabilityForm';
 import { db } from '@/drizzle/db';
 import { ShiftTable } from './tables/ShiftTable';
 import MyCalendar from './calendar/Calendar';
@@ -32,7 +31,6 @@ export default async function Page() {
             <TabsList className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(150px,1fr))]">
                 <TabsTrigger value="calendar">Calendar</TabsTrigger>
                 <TabsTrigger value="shifts">Your shifts</TabsTrigger>
-                <TabsTrigger value="request">Availability</TabsTrigger>
                 <TabsTrigger value="trade">Trade shifts</TabsTrigger>
                 {role && <TabsTrigger value="assign">Assign shifts</TabsTrigger>}
                 {role && <TabsTrigger value="all">View all shifts</TabsTrigger>}
@@ -41,8 +39,6 @@ export default async function Page() {
             <TabsContent value="calendar"><MyCalendar /></TabsContent>
 
             <TabsContent value="shifts">{<ShiftTable userId={user.employees.id} />}</TabsContent>
-
-            <TabsContent value="request">{<AvailabilityForm />}</TabsContent>
 
             <TabsContent value="trade">{/* Trade shifts content goes here */}</TabsContent>
 
