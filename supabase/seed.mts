@@ -68,11 +68,14 @@ function main() {
 
     const sqlStatements = `
 --Location seeding
-INSERT INTO public.locations (name)
+INSERT INTO public.locations (name, timezone)
 VALUES
-('Fremont'),
-('Austin'),
-('Germany');
+('Fremont', 'America/Los_Angeles'),
+('Livermore', 'America/Los_Angeles'),
+('Lathrop', 'America/Los_Angeles'),
+('GFTX', 'America/Chicago'),
+('Kyle', 'America/Chicago'),
+('Brussels', 'Europe/Brussels');
 
 --Employees seeding and shifts seeding 
 INSERT INTO public.clock_types (label)
