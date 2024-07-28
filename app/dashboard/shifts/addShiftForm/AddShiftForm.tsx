@@ -23,12 +23,7 @@ import { formatShiftTimeRange, isBusy } from './utils';
 import Templates from './TemplateTimes';
 import Hover from './Hover';
 
-//TODO: refactor this huge thing
-
-const AddShiftForm = ({
-    employees,
-    locations,
-}: {
+interface PropTypes {
     employees: {
         label: string;
         value: string;
@@ -45,12 +40,12 @@ const AddShiftForm = ({
         }[];
     }[];
     locations: { label: string; value: number; timezone: string }[];
-}) => {
+}
+
+const AddShiftForm = ({ employees, locations }: PropTypes) => {
     const [openPopover, setOpenPopover] = useState<string | null>(null);
     const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
-
     const { toast } = useToast();
-    if (!employees) return <div>Loading...</div>;
 
     const tomorrow = dayjs().add(1, 'day');
     const form = useForm<z.infer<typeof formSchema>>({
@@ -65,7 +60,6 @@ const AddShiftForm = ({
         },
     });
     const [watchLocation] = form.watch(['location', 'employees']);
-
     const { fields, append, remove } = useFieldArray({
         name: 'employees',
         control: form.control,
@@ -73,8 +67,9 @@ const AddShiftForm = ({
 
     const [availableEmployees, setAvailableEmployees] = useState(employees);
 
+    if (!employees) return <div>Loading...</div>;
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log('submit');
         setSubmitDisabled(true);
         const res = await submit(values);
         if (res.success) {
