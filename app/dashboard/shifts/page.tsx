@@ -5,6 +5,7 @@ import AddShiftForm from './addShiftForm/AddShiftForm';
 import AvailabilityForm from './availabilityForm/AvailabilityForm';
 import { db } from '@/drizzle/db';
 import { ShiftTable } from './tables/ShiftTable';
+import MyCalendar from './calendar/Calendar';
 
 export default async function Page() {
     const user = await selectProfile();
@@ -37,7 +38,7 @@ export default async function Page() {
                 {role && <TabsTrigger value="all">View all shifts</TabsTrigger>}
             </TabsList>
 
-            <TabsContent value="calendar">{/* Calendar content goes here */}</TabsContent>
+            <TabsContent value="calendar"><MyCalendar /></TabsContent>
 
             <TabsContent value="shifts">{<ShiftTable userId={user.employees.id} />}</TabsContent>
 
