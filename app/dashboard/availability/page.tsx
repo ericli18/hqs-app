@@ -1,9 +1,11 @@
-import AvailabilityForm from './availabilityForm/AvailabilityForm';
+import { AvailabilityTable } from './tables/AvailabilityTable';
+import AvailabilityButton from './availabilityForm/AvailabilityButton'
 
 export default function Page() {
     return (
         <div>
-            <AvailabilityForm />
+            <AvailabilityButton />
+            <AvailabilityTable />
         </div>
     );
 }
