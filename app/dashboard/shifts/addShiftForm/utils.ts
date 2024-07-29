@@ -62,8 +62,8 @@ export const isBusy = (
             assert(availability.endTime);
             const start = combineDateTime(availability.startDate, availability.startTime, timezone);
             const end = combineDateTime(availability.endDate, availability.endTime, timezone);
-            const inStart = dayjs(shiftStart).isBetween(start, end);
-            const inEnd = dayjs(shiftEnd).isBetween(start, end);
+            const inStart = dayjs(shiftStart).isBetween(start, end, "m", "[]");
+            const inEnd = dayjs(shiftEnd).isBetween(start, end, "m", "[]");
 
             return inStart || inEnd;
         }
