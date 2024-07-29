@@ -17,13 +17,6 @@ const displayDate = (date: string, time: string | null) => {
     return formatISOPrintable(combineDateTime(date, time));
 };
 export const defaultColumns = [
-    columnHelper.display({
-        id: 'actions',
-    }),
-    columnHelper.accessor('description', {
-        header: 'Reason',
-        cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor((cell) => displayDate(cell.startDate, cell.startTime), {
         header: 'Start',
         cell: (info) => info.getValue(),
@@ -31,5 +24,12 @@ export const defaultColumns = [
     columnHelper.accessor((cell) => displayDate(cell.endDate, cell.endTime), {
         header: 'End',
         cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor('description', {
+        header: 'Reason',
+        cell: (info) => info.getValue(),
+    }),
+    columnHelper.display({
+        id: 'actions',
     }),
 ];

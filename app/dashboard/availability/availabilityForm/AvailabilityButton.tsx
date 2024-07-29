@@ -7,16 +7,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { UserPlus } from 'lucide-react';
 import AvailabilityForm  from './AvailabilityForm';
 
 export default async function AvailabilityButton() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="default" className="bg-green-600 hover:bg-green-700">
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add Event
+                <Button variant="default" className='max-w-64'>
+                    Block out time
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:min-w-max">

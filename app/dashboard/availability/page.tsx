@@ -3,7 +3,7 @@ import AvailabilityButton from './availabilityForm/AvailabilityButton'
 
 export default function Page() {
     return (
-        <div>
+        <div className='flex flex-col gap-4'>
             <AvailabilityButton />
             <AvailabilityTable />
         </div>
