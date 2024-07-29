@@ -1,9 +1,10 @@
 import dayjs from 'dayjs';
 import { employeeAvailabilities } from '@/drizzle/schema';
 import { type InferSelectModel } from 'drizzle-orm';
-import { fromTimezone, toTimezone } from '@/lib/utils';
+import {  toTimezone } from '@/lib/utils';
 import isBetween from 'dayjs/plugin/isBetween';
 import assert from 'assert';
+import { combineDateTime } from '@/lib/utils';
 dayjs.extend(isBetween);
 
 export type availabilities = InferSelectModel<typeof employeeAvailabilities>;
@@ -21,12 +22,6 @@ export const formatShiftTimeRange = (start: Date | string | undefined, end: Date
     } else {
         return `${startDate.format('MMMM D')} to ${endDate.format('MMMM D')} from ${startDate.format('h:mm A')} to ${endDate.format('h:mm A')}`;
     }
-};
-
-const combineDateTime = (date: string, time: string, timezone: string) => {
-    const convertedTime = dayjs(fromTimezone(time)).format('HH:MM'); //Want to convert it to local time
-    const convertedTotal = toTimezone(convertedTime, date, timezone);
-    return convertedTotal;
 };
 
 export const isBusy = (

@@ -14,7 +14,7 @@ describe('isBusy', () => {
         dayjs.tz.setDefault();
     });
 
-    const timezone = 'America/Los_Angeles';
+    const timezone = 'America/Chicago';
 
     const createAvailability = (
         startDate: string,
@@ -81,11 +81,12 @@ describe('isBusy', () => {
     });
 
     test('should handle edge case: shift starts exactly at availability end', () => {
-        const availabilities = [createAvailability('2023-07-01', '2023-07-03', false, '09:00', '17:00')];
+        const availabilities = [createAvailability('2023-07-01', '2023-07-03', false, '10:00', '17:00')];
         const result = isBusy(availabilities, '10:00', '2023-07-03', '2023-07-03', '16:00', timezone);
         expect(result).toBeTruthy();
     });
 
+    //doesn't really work yet
     test('should handle edge case: shift ends exactly at availability start', () => {
         const availabilities = [createAvailability('2023-07-01', '2023-07-03', false, '10:00', '17:00')];
         const result = isBusy(availabilities, '10:00', '2023-07-01', '2023-07-01', '17:00', timezone);

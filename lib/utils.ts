@@ -55,3 +55,9 @@ export function fromTimezone(timestamptz: string, toTimezone = 'default') {
 export function formatISOPrintable(isoTimestamp: string) {
     return dayjs(isoTimestamp).format('ddd MM/DD/YY - hh:mm A');
 }
+
+export const combineDateTime = (date: string, time: string, timezone = "default") => {
+    const convertedTime = dayjs(fromTimezone(time)).format('HH:mm'); //Want to convert it to local time
+    const convertedTotal = toTimezone(convertedTime, date, timezone);
+    return convertedTotal;
+};
