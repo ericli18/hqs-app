@@ -30,7 +30,6 @@ export default function AvailabilityForm() {
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         setSubmitDisabled(true);
-        console.log(data)
         try {
             const result = await submit(data);
             if (result.success) {
@@ -140,7 +139,7 @@ export default function AvailabilityForm() {
                         control={form.control}
                         name="isFullDayEvent"
                         render={({ field }) => (
-                            <FormItem className="max-w-48 flex flex-row items-start space-x-3 space-y-0 self-center rounded-md border p-4">
+                            <FormItem className="flex max-w-48 flex-row items-start space-x-3 space-y-0 self-center rounded-md border p-4">
                                 <FormControl>
                                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>

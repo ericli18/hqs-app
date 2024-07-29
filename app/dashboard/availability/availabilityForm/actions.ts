@@ -7,9 +7,9 @@ import { employeeAvailabilities } from '@/drizzle/schema';
 import { formSchema } from './schema';
 import { z } from 'zod';
 import { toTimezone } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
 
 type SubmitResult = { success: true; message: string; id: number | string } | { success: false; error: string };
-
 
 export const submit = async (values: z.infer<typeof formSchema>): Promise<SubmitResult> => {
     try {
@@ -49,6 +49,8 @@ export const submit = async (values: z.infer<typeof formSchema>): Promise<Submit
         if (!res[0]) {
             return { success: false, error: 'Failed to insert availability' };
         }
+
+        revalidatePath('/dashboard/availability');
 
         return {
             success: true,
