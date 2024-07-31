@@ -21,3 +21,15 @@ export const getAvailabilities = cache(async () => {
 
     return allAvailabilities;
 });
+
+export const removeAvailability = async (availabilityID: number) => {
+    const self = await selectProfile();
+    if (!self) {
+        return null;
+    }
+
+    const deletedAvailability = await db
+        .delete(employeeAvailabilities)
+        .where(eq(employeeAvailabilities.employeeAvailabilityId, availabilityID));
+    return deletedAvailability;
+};
