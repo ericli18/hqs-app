@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
-import { TableSkeleton } from '@/components/skeletons/table';
+import { CalendarSkeleton } from '@/components/skeletons/calendar';
 import { getShifts, selectProfile } from '@/lib/data';
 import dayjs from 'dayjs';
 import MyCalendar from './Calendar';
+import { getAvailabilities } from '@/services/availability';
 
 export interface Event {
     title: string;
@@ -17,8 +18,9 @@ const CalendarComponent = async () => {
         return null;
     }
     console.log('waiting...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // await new Promise((resolve) => setTimeout(resolve, 3000));
     const shifts = await getShifts(profile.employees.id);
+    const availabilities = await getAvailabilities();
     const events: Event[] = shifts.map((shift) => {
         return { title: shift.location, start: dayjs(shift.start_time).toDate(), end: dayjs(shift.end_time).toDate() };
     });
@@ -28,7 +30,7 @@ const CalendarComponent = async () => {
 
 export default function CalendarWrapper() {
     return (
-        <Suspense fallback={<div>Loading</div>}>
+        <Suspense fallback={<CalendarSkeleton />}>
             <CalendarComponent />
         </Suspense>
     );
