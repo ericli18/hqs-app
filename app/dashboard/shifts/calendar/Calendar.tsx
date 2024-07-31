@@ -19,7 +19,8 @@ const MyCalendar = ({ events }: { events: Event[] }) => (
             events={events}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
+            defaultView='week'
+            style={{ height: 700 }}
         />
     </div>
 );

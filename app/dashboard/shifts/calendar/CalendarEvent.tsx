@@ -1,3 +1,4 @@
 export default function CalendarEvent({ title }: { title: string }) {
-    return <div className="bg-red-500 h-full grid place-items-center">{title}</div>;
+    const isShift = (title !== 'unavailable') // this is hardcoded in to the calendar wrapper
+    return <div className={`${isShift? "bg-slate-500" : "bg-red-400"} h-full py-2 grid place-items-center`}>{title}</div>;
 }

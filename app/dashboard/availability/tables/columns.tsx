@@ -16,6 +16,7 @@ const displayDate = (date: string, time: string | null) => {
     }
     return formatISOPrintable(combineDateTime(date, time));
 };
+
 export const defaultColumns = [
     columnHelper.accessor((cell) => displayDate(cell.startDate, cell.startTime), {
         header: 'Start',
