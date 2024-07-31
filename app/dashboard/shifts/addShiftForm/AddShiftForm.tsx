@@ -307,10 +307,6 @@ const AddShiftForm = ({ employees, locations }: PropTypes) => {
                                                                             );
                                                                             setOpenPopover(null);
                                                                         }}
-                                                                        // className={cn(
-                                                                        //     'flex',
-                                                                        //     shift ? 'bg-red-200' : ''
-                                                                        // )}
                                                                     >
                                                                         <Check
                                                                             className={cn(
