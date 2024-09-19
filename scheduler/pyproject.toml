@@ -5,9 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "ortools>=9.10.4067",
+    "fastapi[standard]>=0.115.0",
+    "ortools>=9.11.4210",
+    "pandas>=2.2.2",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
