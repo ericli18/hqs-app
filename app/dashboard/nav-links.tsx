@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 const links = [
     { name: 'Home', href: '/dashboard', icon: HomeIcon },
-    { name: 'Shifts', href: '/dashboard/shifts', icon: CalendarClock},
+    { name: 'Shifts', href: '/dashboard/shifts', icon: CalendarClock },
     { name: 'Availability', href: '/dashboard/availability', icon: Clock4 },
     {
         name: 'Clocks',
