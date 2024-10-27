@@ -39,10 +39,18 @@ schedule = {
     for e in employees
 }
 
-# Headcount constraints
+#difference between headcount and actual staff
+understaff = {}
 for d in days:
     for s in shifts:
-        model.add(sum(schedule[e][d][s] for e in employees) == headcounts[d][s])
+        understaff[(d, s)] = model.NewIntVar(0, headcounts[d][s], f'understaff_{d}_{s}') # Upper bound is headcount
+
+for d in days:
+    for s in shifts:
+        model.Add(sum(schedule[e][d][s] for e in employees) + understaff[(d, s)] == headcounts[d][s])
+
+# Objective: Minimize total understaffing
+model.Minimize(sum(understaff[(d, s)] for d in days for s in shifts))
 
 # One shift per day constraint
 for e in employees:
