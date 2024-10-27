@@ -39,6 +39,7 @@ schedule = {
     for e in employees
 }
 
+# Objective: Minimize total understaffing
 #difference between headcount and actual staff
 understaff = {}
 for d in days:
@@ -49,9 +50,10 @@ for d in days:
     for s in shifts:
         model.Add(sum(schedule[e][d][s] for e in employees) + understaff[(d, s)] == headcounts[d][s])
 
-# Objective: Minimize total understaffing
 model.Minimize(sum(understaff[(d, s)] for d in days for s in shifts))
 
+#TODO Objective: Minimize difference shifts worked based off availability of employees 
+#TODO Objective: Keep the same shift type for employees throughout the week
 # One shift per day constraint
 for e in employees:
     for d in days:
@@ -64,6 +66,7 @@ for e in employees:
     )
     model.add(total_hours <= 40)
 
+# TODO: Constraint: No more than 6 consecutive days worked
 solver = cp_model.CpSolver()
 status = solver.solve(model)
 
