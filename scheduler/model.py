@@ -40,6 +40,7 @@ schedule = {
 }
 
 # Objective: Minimize total understaffing
+
 #difference between headcount and actual staff
 understaff = {}
 for d in days:
@@ -53,7 +54,22 @@ for d in days:
 model.Minimize(sum(understaff[(d, s)] for d in days for s in shifts))
 
 #TODO Objective: Minimize difference shifts worked based off availability of employees 
+
+#normalized total shifts?
+# How to normalize is {shifts_worked} / {shifts_able to work} ? This doesn't work because you can't work
+# like 2 shifts in a row
+# Maybe {shifts_worked} / {shifts available per day} but this doesn't allow for people who ask for more off
+# {shifts_worked} / {}
+total_shifts = {}
+for e in employees:
+    total_shifts[e] = model.NewIntVar(0, len(days) * len(shifts), f'total_shifts_{e}')
+
+#total_shfits[e] for e in employees minimize the difference?
+
+# model.add()
+
 #TODO Objective: Keep the same shift type for employees throughout the week
+
 # One shift per day constraint
 for e in employees:
     for d in days:
@@ -67,6 +83,7 @@ for e in employees:
     model.add(total_hours <= 40)
 
 # TODO: Constraint: No more than 6 consecutive days worked
+
 solver = cp_model.CpSolver()
 status = solver.solve(model)
 
@@ -90,5 +107,14 @@ if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
 
     df = pd.DataFrame(schedule_data)
     print(df)
+    
+    print("Stats:")
+    print("Total understaffing: ", sum(solver.value(understaff[(d, s)]) for d in days for s in shifts))
+    print("Total hours per employee: ")
+    for e in employees:
+        total_hours = sum(
+            solver.value(schedule[e][d][s]) * shift_durations[s] for d in days for s in shifts
+        )
+        print(f"{e}: {total_hours} hours")
 else:
     print("No solution found.")
